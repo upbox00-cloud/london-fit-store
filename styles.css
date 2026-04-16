@@ -397,6 +397,60 @@ button, input, textarea, select { font: inherit; }
 .ticker-track span::after { content: "•"; margin-left: 34px; }
 @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-42%); } }
 
+.brand-strip {
+  width: 100%;
+  margin: 18px 0 0;
+  padding: 0;
+}
+
+.brand-strip-inner {
+  width: 100%;
+  display: grid;
+  gap: 14px;
+  padding: 18px 28px;
+  border-radius: 0;
+  border-block: 1px solid rgba(255, 255, 255, 0.08);
+  border-inline: 0;
+  background: rgba(10, 9, 22, 0.68);
+  backdrop-filter: blur(20px);
+}
+
+.brand-strip-label {
+  color: var(--muted);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.brand-strip-track {
+  display: flex;
+  gap: 16px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.brand-strip-track span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 196px;
+  min-height: 58px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(247, 245, 255, 0.92);
+  font-family: "Syne", sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.03em;
+  animation: brandMarquee 20s linear infinite;
+}
+
+@keyframes brandMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
 .section-heading { max-width: 860px; margin-bottom: 34px; }
 .section-heading h2, .solution-copy h2, .experience-copy h2, .authority-copy h2, .cta-panel h2 { font-size: clamp(1.95rem, 4vw, 3.2rem); }
 .pain-grid, .desire-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
@@ -1262,6 +1316,21 @@ button, input, textarea, select { font: inherit; }
     border-radius: 18px;
   }
   .section { padding: 72px 0; }
+  .brand-strip {
+    margin-top: 14px;
+  }
+  .brand-strip-inner {
+    padding: 16px;
+  }
+  .brand-strip-track {
+    gap: 10px;
+  }
+  .brand-strip-track span {
+    min-width: 160px;
+    min-height: 48px;
+    padding: 0 16px;
+    font-size: 0.88rem;
+  }
   .eyebrow {
     font-size: 0.68rem;
     letter-spacing: 0.07em;
