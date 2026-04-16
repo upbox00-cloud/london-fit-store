@@ -115,7 +115,6 @@ function renderQuiz() {
         </span>
         <h3>${result.title}</h3>
         <p>${result.text}</p>
-        <p>Recommended CTA: send her straight to the matching bundle and keep the copy focused on her dominant fit priority.</p>
       </div>
     `;
     quizBack.disabled = false;
