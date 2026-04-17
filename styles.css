@@ -751,24 +751,6 @@ button, input, textarea, select { font: inherit; }
   gap: 22px;
 }
 
-.color-section {
-  position: relative;
-  isolation: isolate;
-}
-
-.color-section::before {
-  content: "";
-  position: absolute;
-  inset: 18px 0;
-  z-index: -1;
-  border-radius: 36px;
-  background:
-    linear-gradient(90deg, rgba(8, 7, 18, 0.94) 0%, rgba(8, 7, 18, 0.78) 45%, rgba(8, 7, 18, 0.5) 70%, rgba(8, 7, 18, 0.22) 100%),
-    url("./images/model-cream.png") right center / contain no-repeat;
-  opacity: 0.55;
-  pointer-events: none;
-}
-
 .product-config {
   grid-template-columns: minmax(0, 0.95fr) minmax(340px, 0.85fr);
   align-items: stretch;
@@ -982,10 +964,12 @@ button, input, textarea, select { font: inherit; }
 .trust-seals {
   margin: 10px auto 12px;
   width: min(100%, 560px);
-  padding: 10px;
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.03);
+  padding: 0;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .trust-seals img {
@@ -997,10 +981,10 @@ button, input, textarea, select { font: inherit; }
 
 .trust-seals-compact {
   width: min(100%, 340px);
-  margin-top: 14px;
+  margin-top: 8px;
   margin-bottom: 0;
-  padding: 4px;
-  border-radius: 16px;
+  padding: 0;
+  border-radius: 0;
 }
 
 .trust-seals-compact img {
@@ -1568,6 +1552,59 @@ button, input, textarea, select { font: inherit; }
   font-size: 0.9rem;
 }
 
+.site-footer {
+  width: min(calc(100% - 28px), var(--max));
+  margin: 0 auto 120px;
+  padding-bottom: 8px;
+}
+
+.site-footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 18px 28px;
+  padding: 22px 24px;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 8, 18, 0.76);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow);
+}
+
+.site-footer-brand {
+  display: grid;
+  gap: 6px;
+}
+
+.site-footer-brand strong {
+  font-family: "Syne", sans-serif;
+  font-size: 1.05rem;
+}
+
+.site-footer-brand span {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.site-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.site-footer-links a {
+  min-height: 42px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
 .reveal {
   opacity: 0;
   transform: translateY(28px) scale(0.985);
@@ -1577,12 +1614,6 @@ button, input, textarea, select { font: inherit; }
 .reveal.visible { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 
 @media (max-width: 1180px) {
-  .color-section::before {
-    background:
-      linear-gradient(180deg, rgba(8, 7, 18, 0.92) 0%, rgba(8, 7, 18, 0.66) 55%, rgba(8, 7, 18, 0.36) 100%),
-      url("./images/model-cream.png") center top / cover no-repeat;
-    opacity: 0.34;
-  }
   .hero, .experience-section, .authority-section, .solution-shell, .quiz-layout { grid-template-columns: 1fr; }
   .pain-grid, .desire-grid, .feature-grid, .fun-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .steps-grid, .pricing-grid, .objection-grid, .testimonial-grid, .proof-stats, .proof-highlights, .hero-proof { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1594,14 +1625,6 @@ button, input, textarea, select { font: inherit; }
 }
 
 @media (max-width: 820px) {
-  .color-section::before {
-    inset: 8px 0;
-    border-radius: 24px;
-    background:
-      linear-gradient(180deg, rgba(8, 7, 18, 0.96) 0%, rgba(8, 7, 18, 0.74) 56%, rgba(8, 7, 18, 0.48) 100%),
-      url("./images/model-cream.png") center top / cover no-repeat;
-    opacity: 0.22;
-  }
   .topbar {
     position: relative;
     top: 0;
@@ -1976,6 +1999,20 @@ button, input, textarea, select { font: inherit; }
     right: 12px;
     bottom: 88px;
     width: auto;
+  }
+  .site-footer {
+    margin-bottom: 110px;
+  }
+  .site-footer-inner {
+    padding: 18px;
+    border-radius: 22px;
+  }
+  .site-footer-links {
+    width: 100%;
+  }
+  .site-footer-links a {
+    flex: 1 1 calc(50% - 10px);
+    min-height: 44px;
   }
 }
 
