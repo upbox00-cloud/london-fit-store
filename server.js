@@ -15,9 +15,6 @@ if (!stripeSecretKey) {
 
 const stripe = stripeSecretKey ? new Stripe(stripeSecretKey) : null;
 
-app.use(express.json());
-app.use(express.static(__dirname));
-
 const allowedColours = new Set(["Mocha Taupe", "Rose Pink", "Classic Black", "Soft Cream"]);
 const allowedSizes = new Set(["S", "M", "L", "XL"]);
 const colourImageMap = {
@@ -27,6 +24,9 @@ const colourImageMap = {
   "Soft Cream": "model-cream.png"
 };
 
+app.use(express.json());
+app.use(express.static(__dirname));
+
 app.post("/api/create-checkout-session", async (req, res) => {
   try {
     if (!stripe) {
@@ -34,11 +34,9 @@ app.post("/api/create-checkout-session", async (req, res) => {
     }
 
     const { colour, size, quantity } = req.body || {};
-
     const safeColour = allowedColours.has(colour) ? colour : "Mocha Taupe";
     const safeSize = allowedSizes.has(size) ? size : "S";
     const safeQuantity = Math.min(9, Math.max(1, Number.parseInt(quantity, 10) || 1));
-
     const origin = `${req.protocol}://${req.get("host")}`;
     const selectedImage = colourImageMap[safeColour] || "model-taupe.png";
     const totalAmount = 2299 * safeQuantity;
@@ -46,14 +44,22 @@ app.post("/api/create-checkout-session", async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       submit_type: "pay",
-      success_url: `${origin}/?checkout=success`,
+      success_url: `${origin}/?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/?checkout=cancel`,
+      customer_creation: "always",
       billing_address_collection: "required",
       phone_number_collection: {
         enabled: true
       },
       shipping_address_collection: {
         allowed_countries: ["GB", "PT", "IE", "ES", "FR", "DE", "IT", "NL", "BE", "LU"]
+      },
+      payment_intent_data: {
+        metadata: {
+          colour: safeColour,
+          size: safeSize,
+          quantity: String(safeQuantity)
+        }
       },
       line_items: [
         {
@@ -62,8 +68,8 @@ app.post("/api/create-checkout-session", async (req, res) => {
             currency: "gbp",
             unit_amount: 2299,
             product_data: {
-              name: `London Fit™ Sculpt Flare Legging x${safeQuantity}`,
-              description: `Colour: ${safeColour} | Size: ${safeSize} | Qty: ${safeQuantity} | Total: £${(totalAmount / 100).toFixed(2)}`,
+              name: `London Fit Sculpt Flare Legging x${safeQuantity}`,
+              description: `Colour: ${safeColour} | Size: ${safeSize} | Qty: ${safeQuantity} | Total: GBP ${(totalAmount / 100).toFixed(2)}`,
               images: [`${origin}/images/${selectedImage}`],
               metadata: {
                 colour: safeColour,
@@ -76,17 +82,23 @@ app.post("/api/create-checkout-session", async (req, res) => {
       metadata: {
         colour: safeColour,
         size: safeSize,
-        quantity: String(safeQuantity)
+        quantity: String(safeQuantity),
+        store_name: "London Fit",
+        order_email_flow: "processing_confirmation"
       }
     });
 
-    res.json({ url: session.url });
+    return res.json({ url: session.url });
   } catch (error) {
     console.error("Stripe checkout session error:", error);
-    res.status(500).json({ error: "Unable to start checkout right now." });
+    return res.status(500).json({ error: "Unable to start checkout right now." });
   }
 });
 
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
 app.listen(port, () => {
-  console.log(`London Fit™ store running at http://localhost:${port}`);
+  console.log(`London Fit store running at http://localhost:${port}`);
 });

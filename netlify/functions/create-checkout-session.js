@@ -39,14 +39,22 @@ exports.handler = async (event) => {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       submit_type: "pay",
-      success_url: `${siteUrl}/?checkout=success`,
+      success_url: `${siteUrl}/?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}/?checkout=cancel`,
+      customer_creation: "always",
       billing_address_collection: "required",
       phone_number_collection: {
         enabled: true
       },
       shipping_address_collection: {
         allowed_countries: ["GB", "PT", "IE", "ES", "FR", "DE", "IT", "NL", "BE", "LU"]
+      },
+      payment_intent_data: {
+        metadata: {
+          colour: safeColour,
+          size: safeSize,
+          quantity: String(safeQuantity)
+        }
       },
       line_items: [
         {
@@ -55,8 +63,8 @@ exports.handler = async (event) => {
             currency: "gbp",
             unit_amount: 2299,
             product_data: {
-              name: `London Fit™ Sculpt Flare Legging x${safeQuantity}`,
-              description: `Colour: ${safeColour} | Size: ${safeSize} | Qty: ${safeQuantity} | Total: £${(totalAmount / 100).toFixed(2)}`,
+              name: `London Fit Sculpt Flare Legging x${safeQuantity}`,
+              description: `Colour: ${safeColour} | Size: ${safeSize} | Qty: ${safeQuantity} | Total: GBP ${(totalAmount / 100).toFixed(2)}`,
               images: [`${siteUrl}/images/${selectedImage}`],
               metadata: {
                 colour: safeColour,
@@ -69,7 +77,9 @@ exports.handler = async (event) => {
       metadata: {
         colour: safeColour,
         size: safeSize,
-        quantity: String(safeQuantity)
+        quantity: String(safeQuantity),
+        store_name: "London Fit",
+        order_email_flow: "processing_confirmation"
       }
     });
 
