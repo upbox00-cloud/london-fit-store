@@ -237,6 +237,34 @@ document.querySelectorAll(".magnetic").forEach((button) => {
 });
 
 const ugcStrip = document.querySelector(".ugc-strip");
+const reviewModal = document.getElementById("review-modal");
+const reviewModalBackdrop = document.getElementById("review-modal-backdrop");
+const reviewModalClose = document.getElementById("review-modal-close");
+const reviewModalImage = document.getElementById("review-modal-image");
+const reviewModalText = document.getElementById("review-modal-text");
+
+function openReviewModal(card) {
+  if (!reviewModal || !reviewModalImage || !reviewModalText) {
+    return;
+  }
+
+  reviewModalImage.src = card.dataset.reviewImage || "";
+  reviewModalImage.alt = card.dataset.reviewAlt || "Customer review photo";
+  reviewModalText.textContent = card.dataset.reviewText || "";
+  reviewModal.classList.add("is-open");
+  reviewModal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+
+function closeReviewModal() {
+  if (!reviewModal) {
+    return;
+  }
+
+  reviewModal.classList.remove("is-open");
+  reviewModal.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
 
 if (ugcStrip) {
   let autoScroll;
@@ -276,6 +304,25 @@ if (ugcStrip) {
   ugcStrip.addEventListener("pointerenter", stopAutoScroll);
   ugcStrip.addEventListener("pointerleave", startAutoScroll);
 }
+
+document.querySelectorAll(".review-photo").forEach((card) => {
+  card.addEventListener("click", () => openReviewModal(card));
+  card.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openReviewModal(card);
+    }
+  });
+});
+
+reviewModalBackdrop?.addEventListener("click", closeReviewModal);
+reviewModalClose?.addEventListener("click", closeReviewModal);
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && reviewModal?.classList.contains("is-open")) {
+    closeReviewModal();
+  }
+});
 
 const productConfigImage = document.getElementById("product-config-image");
 const colorSwatches = document.querySelectorAll(".color-swatch");
@@ -367,6 +414,33 @@ qtyIncrease?.addEventListener("click", () => {
 });
 
 updateSelectionSummary();
+
+formatPrice = (value) => `£${value.toFixed(2)}`;
+updateSelectionSummary();
+
+document.querySelectorAll(".star-btn").forEach((button) => {
+  button.addEventListener("click", () => {
+    const selectedRating = Number(button.dataset.rating || 5);
+
+    document.querySelectorAll(".star-btn").forEach((starButton) => {
+      const starRating = Number(starButton.dataset.rating || 0);
+      starButton.classList.toggle("active", starRating <= selectedRating);
+    });
+  });
+});
+
+document.getElementById("review-photo-input")?.addEventListener("change", (event) => {
+  const file = event.target.files?.[0];
+  const reviewPreview = document.getElementById("review-preview");
+  const reviewPreviewImage = document.getElementById("review-preview-image");
+
+  if (!file || !reviewPreview || !reviewPreviewImage) {
+    return;
+  }
+
+  reviewPreviewImage.src = URL.createObjectURL(file);
+  reviewPreview.hidden = false;
+});
 
 checkoutButton?.addEventListener("click", async () => {
   const checkoutNote = document.getElementById("checkout-note");

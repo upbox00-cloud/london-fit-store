@@ -55,7 +55,7 @@ exports.handler = async (event) => {
             currency: "gbp",
             unit_amount: 2299,
             product_data: {
-              name: `London Fit Sculpt Leggings x${safeQuantity}`,
+              name: `London Fit™ Sculpt Flare Legging x${safeQuantity}`,
               description: `Colour: ${safeColour} | Size: ${safeSize} | Qty: ${safeQuantity} | Total: £${(totalAmount / 100).toFixed(2)}`,
               images: [`${siteUrl}/images/${selectedImage}`],
               metadata: {

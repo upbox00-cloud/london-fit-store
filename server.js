@@ -62,7 +62,7 @@ app.post("/api/create-checkout-session", async (req, res) => {
             currency: "gbp",
             unit_amount: 2299,
             product_data: {
-              name: `London Fit Sculpt Leggings x${safeQuantity}`,
+              name: `London Fit™ Sculpt Flare Legging x${safeQuantity}`,
               description: `Colour: ${safeColour} | Size: ${safeSize} | Qty: ${safeQuantity} | Total: £${(totalAmount / 100).toFixed(2)}`,
               images: [`${origin}/images/${selectedImage}`],
               metadata: {
@@ -88,5 +88,5 @@ app.post("/api/create-checkout-session", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`London Fit store running at http://localhost:${port}`);
+  console.log(`London Fit™ store running at http://localhost:${port}`);
 });
