@@ -250,7 +250,7 @@
         <form class="review-form" id="review-form">
           <label class="review-field">
             <span>Your name</span>
-            <input type="text" name="name" placeholder="e.g. Amelia from Chelsea">
+            <input type="text" name="name" id="review-name" placeholder="e.g. Amelia from Chelsea">
           </label>
 
           <div class="review-field">
@@ -266,7 +266,7 @@
 
           <label class="review-field">
             <span>Your comment</span>
-            <textarea name="comment" rows="4" placeholder="Tell shoppers how the fit, fabric and length felt on you."></textarea>
+            <textarea name="comment" id="review-comment" rows="4" placeholder="Tell shoppers how the fit, fabric and length felt on you."></textarea>
           </label>
 
           <label class="review-upload">
@@ -279,7 +279,8 @@
             <img id="review-preview-image" src="" alt="Review photo preview">
           </div>
 
-          <button class="btn btn-primary" type="button">Submit review</button>
+          <button class="btn btn-primary" id="review-submit" type="button">Submit review</button>
+          <p class="review-status" id="review-status">Add your stars, comment and photo to place your review in the gallery.</p>
         </form>
       </div>
     </section>

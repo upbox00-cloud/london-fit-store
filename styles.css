@@ -1229,6 +1229,31 @@ button, input, textarea, select { font: inherit; }
   pointer-events: none;
 }
 
+.ugc-user-note {
+  padding: 14px 14px 16px;
+  display: grid;
+  gap: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 8, 18, 0.74);
+}
+
+.ugc-user-stars {
+  color: #ffd35a;
+  letter-spacing: 0.08em;
+  font-size: 0.88rem;
+}
+
+.ugc-user-note strong {
+  font-size: 0.9rem;
+}
+
+.ugc-user-note p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
 .review-compose {
   margin-top: 24px;
   display: grid;
@@ -1311,6 +1336,16 @@ button, input, textarea, select { font: inherit; }
   background: rgba(255, 211, 90, 0.08);
 }
 
+.star-btn.is-popping {
+  animation: starPop 0.24s ease;
+}
+
+@keyframes starPop {
+  0% { transform: scale(0.92); }
+  70% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
 .review-upload {
   display: grid;
   gap: 4px;
@@ -1343,6 +1378,21 @@ button, input, textarea, select { font: inherit; }
   height: 220px;
   object-fit: cover;
   object-position: center top;
+}
+
+.review-status {
+  margin: -2px 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.review-status.is-error {
+  color: #ffb7c8;
+}
+
+.review-status.is-success {
+  color: #a7ffd0;
 }
 
 .review-modal {

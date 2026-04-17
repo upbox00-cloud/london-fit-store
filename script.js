@@ -92,6 +92,7 @@ function computeWinner() {
     if (!value) {
       return accumulator;
     }
+
     accumulator[value] = (accumulator[value] || 0) + 1;
     return accumulator;
   }, {});
@@ -100,6 +101,10 @@ function computeWinner() {
 }
 
 function renderQuiz() {
+  if (!quizCard || !quizNext || !quizBack || !quizStepLabel || !quizProgressBar) {
+    return;
+  }
+
   const isResult = currentStep >= quizQuestions.length;
 
   if (isResult) {
@@ -157,7 +162,7 @@ quizNext?.addEventListener("click", () => {
   }
 
   if (!answers[currentStep]) {
-    const firstOption = quizCard.querySelector(".quiz-option");
+    const firstOption = quizCard?.querySelector(".quiz-option");
     if (firstOption) {
       answers[currentStep] = firstOption.dataset.value;
     }
@@ -266,8 +271,18 @@ function closeReviewModal() {
   document.body.style.overflow = "";
 }
 
+function attachReviewCardInteractions(card) {
+  card.addEventListener("click", () => openReviewModal(card));
+  card.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openReviewModal(card);
+    }
+  });
+}
+
 if (ugcStrip) {
-  let autoScroll;
+  let autoScroll = null;
 
   const startAutoScroll = () => {
     if (autoScroll) {
@@ -305,16 +320,7 @@ if (ugcStrip) {
   ugcStrip.addEventListener("pointerleave", startAutoScroll);
 }
 
-document.querySelectorAll(".review-photo").forEach((card) => {
-  card.addEventListener("click", () => openReviewModal(card));
-  card.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      openReviewModal(card);
-    }
-  });
-});
-
+document.querySelectorAll(".review-photo").forEach(attachReviewCardInteractions);
 reviewModalBackdrop?.addEventListener("click", closeReviewModal);
 reviewModalClose?.addEventListener("click", closeReviewModal);
 
@@ -333,13 +339,22 @@ const qtyValue = document.getElementById("qty-value");
 const selectionSummary = document.getElementById("selection-summary");
 const selectionTotal = document.getElementById("selection-total");
 const checkoutButton = document.getElementById("checkout-button");
+const reviewName = document.getElementById("review-name");
+const reviewComment = document.getElementById("review-comment");
+const reviewStatus = document.getElementById("review-status");
+const reviewPhotoInput = document.getElementById("review-photo-input");
+const reviewPreview = document.getElementById("review-preview");
+const reviewPreviewImage = document.getElementById("review-preview-image");
+const reviewSubmit = document.getElementById("review-submit");
+
 let selectedColour = document.querySelector(".color-swatch.active")?.dataset.label || "Mocha Taupe";
 let selectedSize = document.querySelector(".size-chip.active")?.textContent?.trim() || "S";
 let selectedQuantity = 1;
+let selectedReviewRating = 5;
 const unitPrice = 22.99;
 
 function formatPrice(value) {
-  return `£${value.toFixed(2).replace(".", ",")}`;
+  return `\u00A3${value.toFixed(2)}`;
 }
 
 function updateSelectionSummary() {
@@ -415,24 +430,38 @@ qtyIncrease?.addEventListener("click", () => {
 
 updateSelectionSummary();
 
-formatPrice = (value) => `£${value.toFixed(2)}`;
-updateSelectionSummary();
+const starButtons = Array.from(document.querySelectorAll(".star-btn"));
 
-document.querySelectorAll(".star-btn").forEach((button) => {
+function updateStarButtons() {
+  starButtons.forEach((starButton) => {
+    const starRating = Number(starButton.dataset.rating || 0);
+    const isActive = starRating <= selectedReviewRating;
+    starButton.classList.toggle("active", isActive);
+    starButton.setAttribute("aria-pressed", isActive ? "true" : "false");
+  });
+}
+
+starButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    const selectedRating = Number(button.dataset.rating || 5);
+    selectedReviewRating = Number(button.dataset.rating || 5);
+    updateStarButtons();
 
-    document.querySelectorAll(".star-btn").forEach((starButton) => {
+    starButtons.forEach((starButton) => {
       const starRating = Number(starButton.dataset.rating || 0);
-      starButton.classList.toggle("active", starRating <= selectedRating);
+      starButton.classList.remove("is-popping");
+
+      if (starRating <= selectedReviewRating) {
+        void starButton.offsetWidth;
+        starButton.classList.add("is-popping");
+      }
     });
   });
 });
 
-document.getElementById("review-photo-input")?.addEventListener("change", (event) => {
+updateStarButtons();
+
+reviewPhotoInput?.addEventListener("change", (event) => {
   const file = event.target.files?.[0];
-  const reviewPreview = document.getElementById("review-preview");
-  const reviewPreviewImage = document.getElementById("review-preview-image");
 
   if (!file || !reviewPreview || !reviewPreviewImage) {
     return;
@@ -440,6 +469,88 @@ document.getElementById("review-photo-input")?.addEventListener("change", (event
 
   reviewPreviewImage.src = URL.createObjectURL(file);
   reviewPreview.hidden = false;
+});
+
+reviewSubmit?.addEventListener("click", () => {
+  const file = reviewPhotoInput?.files?.[0];
+  const name = reviewName?.value.trim() || "London Fit customer";
+  const comment = reviewComment?.value.trim();
+
+  if (!comment) {
+    if (reviewStatus) {
+      reviewStatus.classList.remove("is-success");
+      reviewStatus.classList.add("is-error");
+      reviewStatus.textContent = "Add a short comment before submitting your review.";
+    }
+    return;
+  }
+
+  if (!file) {
+    if (reviewStatus) {
+      reviewStatus.classList.remove("is-success");
+      reviewStatus.classList.add("is-error");
+      reviewStatus.textContent = "Please upload a photo so your review can appear in the gallery.";
+    }
+    return;
+  }
+
+  if (!ugcStrip) {
+    return;
+  }
+
+  const imageUrl = URL.createObjectURL(file);
+  const filledStars = "\u2605".repeat(selectedReviewRating);
+  const emptyStars = "\u2606".repeat(Math.max(0, 5 - selectedReviewRating));
+  const reviewCard = document.createElement("article");
+  reviewCard.className = "ugc-card tilt-card review-photo";
+  reviewCard.tabIndex = 0;
+  reviewCard.setAttribute("role", "button");
+  reviewCard.setAttribute("aria-label", `Open customer review from ${name}`);
+  reviewCard.dataset.reviewImage = imageUrl;
+  reviewCard.dataset.reviewAlt = `Customer review photo from ${name}`;
+  reviewCard.dataset.reviewText = `${filledStars}${emptyStars} ${name}: ${comment}`;
+  reviewCard.innerHTML = `
+    <img src="${imageUrl}" alt="Customer review photo from ${name}">
+    <div class="ugc-user-note">
+      <span class="ugc-user-stars">${filledStars}${emptyStars}</span>
+      <strong>${name}</strong>
+      <p>${comment}</p>
+    </div>
+  `;
+
+  attachReviewCardInteractions(reviewCard);
+  ugcStrip.prepend(reviewCard);
+  ugcStrip.classList.add("visible");
+  ugcStrip.scrollTo({ left: 0, behavior: "smooth" });
+
+  if (reviewName) {
+    reviewName.value = "";
+  }
+
+  if (reviewComment) {
+    reviewComment.value = "";
+  }
+
+  if (reviewPhotoInput) {
+    reviewPhotoInput.value = "";
+  }
+
+  if (reviewPreview) {
+    reviewPreview.hidden = true;
+  }
+
+  if (reviewPreviewImage) {
+    reviewPreviewImage.src = "";
+  }
+
+  selectedReviewRating = 5;
+  updateStarButtons();
+
+  if (reviewStatus) {
+    reviewStatus.classList.remove("is-error");
+    reviewStatus.classList.add("is-success");
+    reviewStatus.textContent = "Your review, stars and photo were added to the reviews section on this page.";
+  }
 });
 
 checkoutButton?.addEventListener("click", async () => {
@@ -479,7 +590,7 @@ checkoutButton?.addEventListener("click", async () => {
 
     if (checkoutNote) {
       checkoutNote.classList.add("is-error");
-      checkoutNote.textContent = "Checkout is not configured yet. Add your Stripe secret key and restart the store server.";
+      checkoutNote.textContent = "Checkout is not configured yet. Check your Stripe secret key and deploy settings.";
     }
 
     console.error(error);
