@@ -118,56 +118,54 @@
         </div>
 
         <div class="product-config-panel">
-          <div class="config-block">
-            <span class="config-label">Colour</span>
-            <div class="color-swatches" aria-label="available colours">
-              <button class="color-swatch active" type="button" data-image="./images/model-taupe.png" data-label="Mocha Taupe" style="--swatch:#6b5a52;">
-                <span></span>
-                <small>Mocha Taupe</small>
-              </button>
-              <button class="color-swatch" type="button" data-image="./images/model-pink.png" data-label="Rose Pink" style="--swatch:#df6eac;">
-                <span></span>
-                <small>Rose Pink</small>
-              </button>
-              <button class="color-swatch" type="button" data-image="./images/model-black.png" data-label="Classic Black" style="--swatch:#1f2127;">
-                <span></span>
-                <small>Classic Black</small>
-              </button>
-              <button class="color-swatch" type="button" data-image="./images/model-cream.png" data-label="Soft Cream" style="--swatch:#ede5d8;">
-                <span></span>
-                <small>Soft Cream</small>
-              </button>
-            </div>
-          </div>
-
-          <div class="config-block">
-            <span class="config-label">Size</span>
-            <div class="size-chips interactive" aria-label="available sizes">
-              <button class="size-chip active" type="button">S</button>
-              <button class="size-chip" type="button">M</button>
-              <button class="size-chip" type="button">L</button>
-              <button class="size-chip" type="button">XL</button>
-            </div>
-          </div>
-
-          <div class="config-block">
-            <span class="config-label">Quantity</span>
-            <div class="qty-picker" aria-label="select quantity">
-              <button class="qty-btn" id="qty-decrease" type="button" aria-label="decrease quantity">-</button>
-              <span class="qty-value" id="qty-value">1</span>
-              <button class="qty-btn" id="qty-increase" type="button" aria-label="increase quantity">+</button>
-            </div>
-            <p class="config-note">Choose how many pairs you want today.</p>
-          </div>
-
           <div class="single-price-panel">
+            <div class="shop-fit-grid">
+              <div class="config-block">
+                <span class="config-label">Colour</span>
+                <div class="color-swatches" aria-label="available colours">
+                  <button class="color-swatch active" type="button" data-image="./images/model-taupe.png" data-label="Mocha Taupe" style="--swatch:#6b5a52;">
+                    <span></span>
+                    <small>Mocha Taupe</small>
+                  </button>
+                  <button class="color-swatch" type="button" data-image="./images/model-pink.png" data-label="Rose Pink" style="--swatch:#df6eac;">
+                    <span></span>
+                    <small>Rose Pink</small>
+                  </button>
+                  <button class="color-swatch" type="button" data-image="./images/model-black.png" data-label="Classic Black" style="--swatch:#1f2127;">
+                    <span></span>
+                    <small>Classic Black</small>
+                  </button>
+                  <button class="color-swatch" type="button" data-image="./images/model-cream.png" data-label="Soft Cream" style="--swatch:#ede5d8;">
+                    <span></span>
+                    <small>Soft Cream</small>
+                  </button>
+                </div>
+              </div>
+
+              <div class="config-block">
+                <span class="config-label">Size</span>
+                <div class="size-chips interactive" aria-label="available sizes">
+                  <button class="size-chip active" type="button">S</button>
+                  <button class="size-chip" type="button">M</button>
+                  <button class="size-chip" type="button">L</button>
+                  <button class="size-chip" type="button">XL</button>
+                </div>
+              </div>
+
+              <div class="config-block">
+                <span class="config-label">Quantity</span>
+                <div class="qty-picker" aria-label="select quantity">
+                  <button class="qty-btn" id="qty-decrease" type="button" aria-label="decrease quantity">-</button>
+                  <span class="qty-value" id="qty-value">1</span>
+                  <button class="qty-btn" id="qty-increase" type="button" aria-label="increase quantity">+</button>
+                </div>
+                <p class="config-note">Choose how many pairs you want today.</p>
+              </div>
+            </div>
             <span class="eyebrow">Price</span>
             <div class="price-stack">
               <span class="price-was">Was &pound;30</span>
               <h2>&pound;22.99</h2>
-            </div>
-            <div class="trust-seals">
-              <img src="./images/trust-badges.png" alt="Trust badges showing 30-day guarantee, free UK shipping, secure checkout and accepted card payments">
             </div>
             <p class="unit-price-note">All colours and sizes are <strong>&pound;22.99 each</strong> today.</p>
             <div class="offer-stack">
@@ -193,6 +191,9 @@
               <button class="btn btn-primary magnetic" id="checkout-button" type="button">Buy 1 now</button>
             </div>
             <p class="checkout-note" id="checkout-note">Your checkout will include the selected colour, size and quantity.</p>
+            <div class="trust-seals trust-seals-compact">
+              <img src="./images/trust-badges.png" alt="Trust badges showing 30-day guarantee, free UK shipping, secure checkout and accepted card payments">
+            </div>
           </div>
         </div>
       </div>
