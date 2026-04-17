@@ -41,7 +41,13 @@ exports.handler = async (event) => {
       submit_type: "pay",
       success_url: `${siteUrl}/?checkout=success`,
       cancel_url: `${siteUrl}/?checkout=cancel`,
-      billing_address_collection: "auto",
+      billing_address_collection: "required",
+      phone_number_collection: {
+        enabled: true
+      },
+      shipping_address_collection: {
+        allowed_countries: ["GB", "PT", "IE", "ES", "FR", "DE", "IT", "NL", "BE", "LU"]
+      },
       line_items: [
         {
           quantity: safeQuantity,
