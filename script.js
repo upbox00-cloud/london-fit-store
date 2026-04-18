@@ -55,6 +55,12 @@ const quizQuestions = [
   }
 ];
 
+function trackMetaEvent(eventName, payload = {}) {
+  if (typeof window !== "undefined" && typeof window.fbq === "function") {
+    window.fbq("track", eventName, payload);
+  }
+}
+
 const outcomeMap = {
   shape: {
     title: "The Sculpt Fit",
@@ -352,6 +358,16 @@ let selectedSize = document.querySelector(".size-chip.active")?.textContent?.tri
 let selectedQuantity = 1;
 let selectedReviewRating = 5;
 const unitPrice = 22.99;
+let hasTrackedAddToCart = false;
+
+trackMetaEvent("ViewContent", {
+  content_name: "London Fit Sculpt Flare Legging",
+  content_category: "Leggings",
+  content_type: "product",
+  content_ids: ["london-fit-sculpt-flare-legging"],
+  value: unitPrice,
+  currency: "GBP"
+});
 
 function formatPrice(value) {
   return `\u00A3${value.toFixed(2)}`;
@@ -371,6 +387,29 @@ function updateSelectionSummary() {
   }
 }
 
+function trackConfiguredSelection() {
+  if (hasTrackedAddToCart) {
+    return;
+  }
+
+  hasTrackedAddToCart = true;
+  trackMetaEvent("AddToCart", {
+    content_name: "London Fit Sculpt Flare Legging",
+    content_category: "Leggings",
+    content_type: "product",
+    content_ids: ["london-fit-sculpt-flare-legging"],
+    value: Number((unitPrice * selectedQuantity).toFixed(2)),
+    currency: "GBP",
+    contents: [
+      {
+        id: "london-fit-sculpt-flare-legging",
+        quantity: selectedQuantity,
+        item_price: unitPrice
+      }
+    ]
+  });
+}
+
 if (productConfigImage && colorSwatches.length) {
   colorSwatches.forEach((swatch) => {
     swatch.addEventListener("click", () => {
@@ -381,6 +420,7 @@ if (productConfigImage && colorSwatches.length) {
       const nextLabel = swatch.dataset.label || "Selected colour";
       selectedColour = nextLabel;
       updateSelectionSummary();
+      trackConfiguredSelection();
 
       if (!nextImage || productConfigImage.getAttribute("src") === nextImage) {
         productConfigImage.setAttribute("alt", `Model wearing the ${nextLabel} sculpt leggings`);
@@ -408,6 +448,7 @@ if (sizeChips.length) {
       chip.classList.add("active");
       selectedSize = chip.textContent.trim();
       updateSelectionSummary();
+      trackConfiguredSelection();
     });
   });
 }
@@ -418,6 +459,7 @@ qtyDecrease?.addEventListener("click", () => {
     qtyValue.textContent = String(selectedQuantity);
   }
   updateSelectionSummary();
+  trackConfiguredSelection();
 });
 
 qtyIncrease?.addEventListener("click", () => {
@@ -426,6 +468,7 @@ qtyIncrease?.addEventListener("click", () => {
     qtyValue.textContent = String(selectedQuantity);
   }
   updateSelectionSummary();
+  trackConfiguredSelection();
 });
 
 updateSelectionSummary();
@@ -553,10 +596,39 @@ reviewSubmit?.addEventListener("click", () => {
   }
 });
 
+const urlState = new URLSearchParams(window.location.search);
+
+if (urlState.get("checkout") === "success") {
+  trackMetaEvent("Purchase", {
+    content_name: "London Fit Sculpt Flare Legging",
+    content_category: "Leggings",
+    content_type: "product",
+    content_ids: ["london-fit-sculpt-flare-legging"],
+    value: Number((unitPrice * selectedQuantity).toFixed(2)),
+    currency: "GBP"
+  });
+}
+
 checkoutButton?.addEventListener("click", async () => {
   const checkoutNote = document.getElementById("checkout-note");
 
   try {
+    trackMetaEvent("InitiateCheckout", {
+      content_name: "London Fit Sculpt Flare Legging",
+      content_category: "Leggings",
+      content_type: "product",
+      content_ids: ["london-fit-sculpt-flare-legging"],
+      value: Number((unitPrice * selectedQuantity).toFixed(2)),
+      currency: "GBP",
+      contents: [
+        {
+          id: "london-fit-sculpt-flare-legging",
+          quantity: selectedQuantity,
+          item_price: unitPrice
+        }
+      ]
+    });
+
     checkoutButton.classList.add("is-loading");
     checkoutButton.textContent = "Opening checkout...";
 
