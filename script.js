@@ -383,7 +383,9 @@ function updateSelectionSummary() {
   }
 
   if (checkoutButton) {
-    checkoutButton.textContent = `Buy ${selectedQuantity} now`;
+    checkoutButton.textContent = selectedQuantity > 1
+      ? `Buy ${selectedQuantity} Now - Limited Stock`
+      : "Buy Now - Limited Stock";
   }
 }
 

@@ -191,6 +191,38 @@ button, input, textarea, select { font: inherit; }
 
 .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin: 24px 0; }
 
+.trust-chip-row,
+.buy-confidence-strip,
+.micro-trust-row,
+.buy-benefit-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.trust-chip-row span,
+.buy-confidence-strip span,
+.micro-trust-row span,
+.buy-benefit-stack span {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.045);
+  color: var(--text);
+  font-size: 0.84rem;
+  font-weight: 800;
+  backdrop-filter: blur(16px);
+}
+
+.hero-trust-row {
+  max-width: 620px;
+  margin: -6px 0 20px;
+}
+
 .btn {
   min-height: 54px;
   padding: 0 24px;
@@ -428,7 +460,7 @@ button, input, textarea, select { font: inherit; }
 
 .ticker {
   overflow: hidden;
-  margin-top: 12px;
+  margin-top: 0;
   border-block: 1px solid rgba(108, 198, 255, 0.18);
   background: linear-gradient(90deg, rgba(255, 79, 147, 0.95), rgba(108, 198, 255, 0.94));
   color: #10091e;
@@ -804,6 +836,39 @@ button, input, textarea, select { font: inherit; }
   margin-bottom: 18px;
 }
 
+.buy-confidence-strip {
+  justify-content: center;
+}
+
+.buy-confidence-strip span {
+  min-height: 36px;
+  color: var(--accent-soft);
+  background: rgba(255, 79, 147, 0.075);
+  border-color: rgba(255, 79, 147, 0.16);
+}
+
+.buy-benefit-stack {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.buy-benefit-stack span {
+  width: 100%;
+  justify-content: flex-start;
+  min-height: 42px;
+  border-radius: 16px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.buy-benefit-stack span::before {
+  content: "+";
+  margin-right: 8px;
+  color: var(--accent-strong);
+  font-weight: 900;
+}
+
 .config-block,
 .single-price-panel {
   padding: 24px;
@@ -1095,6 +1160,21 @@ button, input, textarea, select { font: inherit; }
 .single-price-panel .hero-actions {
   justify-content: center;
   margin-bottom: 0;
+}
+
+.micro-trust-row {
+  justify-content: center;
+  gap: 8px;
+  margin: -8px auto 12px;
+}
+
+.micro-trust-row span {
+  min-height: 32px;
+  padding-inline: 11px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .size-chips {
@@ -1727,7 +1807,10 @@ button, input, textarea, select { font: inherit; }
     min-height: 48px;
     border-radius: 18px;
   }
-  .section { padding: 72px 0; }
+  .section { padding: 68px 0; }
+  .color-section {
+    padding-top: 28px;
+  }
   .brand-strip {
     margin-top: 14px;
   }
@@ -1751,6 +1834,8 @@ button, input, textarea, select { font: inherit; }
   .hero {
     min-height: auto;
     gap: 20px;
+    padding-top: 42px;
+    padding-bottom: 34px;
   }
   .hero::before {
     inset: 0;
@@ -1776,6 +1861,17 @@ button, input, textarea, select { font: inherit; }
   }
   .hero-actions .btn {
     width: 100%;
+  }
+  .hero-trust-row {
+    margin: -4px 0 16px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .trust-chip-row span {
+    min-height: 36px;
+    padding: 0 10px;
+    font-size: 0.76rem;
   }
   .pain-grid, .desire-grid, .feature-grid, .testimonial-grid, .pricing-grid, .objection-grid, .fun-grid, .steps-grid, .proof-stats, .proof-highlights, .hero-proof, .quiz-options, .color-swatches { grid-template-columns: 1fr; }
   .hero-proof div,
@@ -1838,6 +1934,13 @@ button, input, textarea, select { font: inherit; }
   .section-heading {
     margin-bottom: 24px;
   }
+  .color-section .section-heading h2 {
+    font-size: clamp(1.7rem, 7.6vw, 2.18rem);
+  }
+  .color-section .section-heading p {
+    font-size: 0.88rem;
+    line-height: 1.52;
+  }
   .section-heading h2 {
     font-size: clamp(1.8rem, 8vw, 2.45rem);
   }
@@ -1859,6 +1962,24 @@ button, input, textarea, select { font: inherit; }
   .shop-fit-grid {
     gap: 12px;
     margin-bottom: 16px;
+  }
+  .buy-confidence-strip {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .buy-confidence-strip span,
+  .buy-benefit-stack span {
+    min-height: 38px;
+    font-size: 0.8rem;
+  }
+  .micro-trust-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin-top: -2px;
+  }
+  .micro-trust-row span {
+    min-height: 30px;
   }
   .single-price-panel .config-block {
     padding: 16px;
