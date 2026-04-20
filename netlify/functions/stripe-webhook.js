@@ -38,7 +38,7 @@ async function sendProcessingEmail({ to, order }) {
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;">Thank you for shopping with ${escapeHtml(storeName)}. We have received your payment successfully and your order is now being processed by our team.</p>
           <div style="margin:20px 0;padding:18px;border-radius:16px;background:#f8f5ff;border:1px solid #ece3ff;">
             <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6b608a;margin-bottom:10px;">Order summary</div>
-            <p style="margin:0 0 8px;font-size:15px;line-height:1.6;"><strong>Product:</strong> London Fit(TM) Sculpt Flare Legging</p>
+            <p style="margin:0 0 8px;font-size:15px;line-height:1.6;"><strong>Product:</strong> London Fit(TM) Sculpt Flare Leggings</p>
             <p style="margin:0 0 8px;font-size:15px;line-height:1.6;"><strong>Colour:</strong> ${escapeHtml(order.colour)}</p>
             <p style="margin:0 0 8px;font-size:15px;line-height:1.6;"><strong>Size:</strong> ${escapeHtml(order.size)}</p>
             <p style="margin:0 0 8px;font-size:15px;line-height:1.6;"><strong>Quantity:</strong> ${escapeHtml(order.quantity)}</p>
@@ -60,7 +60,7 @@ async function sendProcessingEmail({ to, order }) {
     "We have received your payment successfully and your order is now being processed by our team.",
     "",
     "Order summary:",
-    `- Product: London Fit(TM) Sculpt Flare Legging`,
+    `- Product: London Fit(TM) Sculpt Flare Leggings`,
     `- Colour: ${order.colour}`,
     `- Size: ${order.size}`,
     `- Quantity: ${order.quantity}`,
@@ -105,7 +105,9 @@ exports.handler = async (event) => {
     };
   }
 
-  const stripe = new Stripe(stripeSecretKey);
+  const stripe = new Stripe(stripeSecretKey, {
+    apiVersion: "2026-02-25.clover"
+  });
   const signature = event.headers["stripe-signature"] || event.headers["Stripe-Signature"];
 
   if (!signature) {

@@ -64,22 +64,22 @@ function trackMetaEvent(eventName, payload = {}) {
 const outcomeMap = {
   shape: {
     title: "The Sculpt Fit",
-    text: "You are buying for silhouette first. Lead with the high-waist contour story and the shape-enhancing payoff.",
+    text: "Your best match is the high-waist sculpt fit: smooth through the waist, flattering through the hips and easy to style.",
     accent: "#ffb48e"
   },
   comfort: {
     title: "The Soft Support Fit",
-    text: "You want a legging that feels easy to wear for hours. Sell softness, stretch and zero-fuss comfort.",
+    text: "Your best match is soft support: gentle stretch, secure hold and an easy feel you can keep on after the gym.",
     accent: "#ffd7c5"
   },
   versatile: {
     title: "The All-Day Fit",
-    text: "You want one pair that works in the gym and still looks elevated outside it. Sell versatility hard.",
+    text: "Your best match is the all-day fit: polished enough for coffee runs, comfortable enough for studio sessions.",
     accent: "#dfff79"
   },
   confidence: {
     title: "The Contour Confidence Fit",
-    text: "You are shopping for that instant good-feeling mirror moment. Sell confidence, support and clean lines.",
+    text: "Your best match is contour confidence: clean lines, soft shape and that instant good-mirror feeling.",
     accent: "#ff8b68"
   }
 };
@@ -361,7 +361,7 @@ const unitPrice = 22.99;
 let hasTrackedAddToCart = false;
 
 trackMetaEvent("ViewContent", {
-  content_name: "London Fit Sculpt Flare Legging",
+  content_name: "London Fit Sculpt Flare Leggings",
   content_category: "Leggings",
   content_type: "product",
   content_ids: ["london-fit-sculpt-flare-legging"],
@@ -396,7 +396,7 @@ function trackConfiguredSelection() {
 
   hasTrackedAddToCart = true;
   trackMetaEvent("AddToCart", {
-    content_name: "London Fit Sculpt Flare Legging",
+    content_name: "London Fit Sculpt Flare Leggings",
     content_category: "Leggings",
     content_type: "product",
     content_ids: ["london-fit-sculpt-flare-legging"],
@@ -601,14 +601,31 @@ reviewSubmit?.addEventListener("click", () => {
 const urlState = new URLSearchParams(window.location.search);
 
 if (urlState.get("checkout") === "success") {
-  trackMetaEvent("Purchase", {
-    content_name: "London Fit Sculpt Flare Legging",
-    content_category: "Leggings",
-    content_type: "product",
-    content_ids: ["london-fit-sculpt-flare-legging"],
-    value: Number((unitPrice * selectedQuantity).toFixed(2)),
-    currency: "GBP"
-  });
+  const checkoutSessionId = urlState.get("session_id") || "unknown-session";
+  const purchaseStorageKey = `london-fit-purchase-${checkoutSessionId}`;
+
+  if (!window.sessionStorage.getItem(purchaseStorageKey)) {
+    const purchasedQuantity = Math.max(1, Number.parseInt(urlState.get("qty"), 10) || selectedQuantity);
+    const purchaseValue = Number.parseFloat(urlState.get("total")) || Number((unitPrice * purchasedQuantity).toFixed(2));
+
+    trackMetaEvent("Purchase", {
+      content_name: "London Fit Sculpt Flare Leggings",
+      content_category: "Leggings",
+      content_type: "product",
+      content_ids: ["london-fit-sculpt-flare-legging"],
+      value: Number(purchaseValue.toFixed(2)),
+      currency: "GBP",
+      contents: [
+        {
+          id: "london-fit-sculpt-flare-legging",
+          quantity: purchasedQuantity,
+          item_price: unitPrice
+        }
+      ]
+    });
+
+    window.sessionStorage.setItem(purchaseStorageKey, "tracked");
+  }
 }
 
 checkoutButton?.addEventListener("click", async () => {
@@ -616,7 +633,7 @@ checkoutButton?.addEventListener("click", async () => {
 
   try {
     trackMetaEvent("InitiateCheckout", {
-      content_name: "London Fit Sculpt Flare Legging",
+      content_name: "London Fit Sculpt Flare Leggings",
       content_category: "Leggings",
       content_type: "product",
       content_ids: ["london-fit-sculpt-flare-legging"],
@@ -664,7 +681,7 @@ checkoutButton?.addEventListener("click", async () => {
 
     if (checkoutNote) {
       checkoutNote.classList.add("is-error");
-      checkoutNote.textContent = "Checkout is not configured yet. Check your Stripe secret key and deploy settings.";
+      checkoutNote.textContent = "Checkout could not open just now. Please try again in a moment.";
     }
 
     console.error(error);

@@ -27,7 +27,9 @@ exports.handler = async (event) => {
       };
     }
 
-    const stripe = new Stripe(stripeSecretKey);
+    const stripe = new Stripe(stripeSecretKey, {
+      apiVersion: "2026-02-25.clover"
+    });
     const payload = JSON.parse(event.body || "{}");
     const safeColour = allowedColours.has(payload.colour) ? payload.colour : "Mocha Taupe";
     const safeSize = allowedSizes.has(payload.size) ? payload.size : "S";
@@ -39,7 +41,7 @@ exports.handler = async (event) => {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       submit_type: "pay",
-      success_url: `${siteUrl}/?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${siteUrl}/?checkout=success&session_id={CHECKOUT_SESSION_ID}&qty=${safeQuantity}&total=${(totalAmount / 100).toFixed(2)}`,
       cancel_url: `${siteUrl}/?checkout=cancel`,
       customer_creation: "always",
       billing_address_collection: "required",
@@ -47,8 +49,30 @@ exports.handler = async (event) => {
         enabled: true
       },
       shipping_address_collection: {
-        allowed_countries: ["GB", "PT", "IE", "ES", "FR", "DE", "IT", "NL", "BE", "LU"]
+        allowed_countries: ["GB"]
       },
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            type: "fixed_amount",
+            fixed_amount: {
+              amount: 0,
+              currency: "gbp"
+            },
+            display_name: "Free UK Shipping",
+            delivery_estimate: {
+              minimum: {
+                unit: "business_day",
+                value: 5
+              },
+              maximum: {
+                unit: "business_day",
+                value: 10
+              }
+            }
+          }
+        }
+      ],
       payment_intent_data: {
         metadata: {
           colour: safeColour,
@@ -63,8 +87,8 @@ exports.handler = async (event) => {
             currency: "gbp",
             unit_amount: 2299,
             product_data: {
-              name: `London Fit Sculpt Flare Legging x${safeQuantity}`,
-              description: `Colour: ${safeColour} | Size: ${safeSize} | Qty: ${safeQuantity} | Total: GBP ${(totalAmount / 100).toFixed(2)}`,
+              name: "London Fit Sculpt Flare Leggings",
+              description: `Colour: ${safeColour} | Size: ${safeSize} | Quantity: ${safeQuantity} | Total: GBP ${(totalAmount / 100).toFixed(2)}`,
               images: [`${siteUrl}/images/${selectedImage}`],
               metadata: {
                 colour: safeColour,
