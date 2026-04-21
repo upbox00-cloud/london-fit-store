@@ -56,8 +56,16 @@ const quizQuestions = [
 ];
 
 function trackMetaEvent(eventName, payload = {}) {
+  const normalisedPayload = { ...payload };
+
+  if (Object.prototype.hasOwnProperty.call(normalisedPayload, "value")) {
+    const numericValue = Number(normalisedPayload.value);
+    normalisedPayload.value = Number.isFinite(numericValue) ? Number(numericValue.toFixed(2)) : 0;
+    console.log("Pixel Value:", normalisedPayload.value);
+  }
+
   if (typeof window !== "undefined" && typeof window.fbq === "function") {
-    window.fbq("track", eventName, payload);
+    window.fbq("track", eventName, normalisedPayload);
   }
 }
 
@@ -337,6 +345,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 const productConfigImage = document.getElementById("product-config-image");
+const productConfigRoot = document.querySelector(".product-config");
 const colorSwatches = document.querySelectorAll(".color-swatch");
 const sizeChips = document.querySelectorAll(".size-chip");
 const qtyDecrease = document.getElementById("qty-decrease");
@@ -357,34 +366,88 @@ let selectedColour = document.querySelector(".color-swatch.active")?.dataset.lab
 let selectedSize = document.querySelector(".size-chip.active")?.textContent?.trim() || "S";
 let selectedQuantity = 1;
 let selectedReviewRating = 5;
-const unitPrice = 22.99;
 let hasTrackedAddToCart = false;
+const productPriceElement = document.querySelector(".price-stack h2");
 
-trackMetaEvent("ViewContent", {
-  content_name: "London Fit Sculpt Flare Leggings",
-  content_category: "Leggings",
-  content_type: "product",
-  content_ids: ["london-fit-sculpt-flare-legging"],
-  value: unitPrice,
-  currency: "GBP"
-});
+function parsePrice(value) {
+  const numericValue = Number(String(value || "").replace(/[^0-9.]/g, ""));
+  return Number.isFinite(numericValue) && numericValue > 0 ? numericValue : 22.99;
+}
+
+const selectedProduct = {
+  id: productConfigRoot?.dataset.productId || "london-fit-sculpt-flare-legging",
+  name: productConfigRoot?.dataset.productName || "London Fit Sculpt Flare Leggings",
+  category: "Leggings",
+  price: parsePrice(productConfigRoot?.dataset.productPrice || productPriceElement?.textContent)
+};
+
+function getSelectedVariant() {
+  const activeSwatch = document.querySelector(".color-swatch.active");
+  const variantPrice = parsePrice(activeSwatch?.dataset.price || selectedProduct.price);
+
+  return {
+    id: `${selectedProduct.id}-${selectedColour.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${selectedSize.toLowerCase()}`,
+    name: `${selectedProduct.name} - ${selectedColour} / ${selectedSize}`,
+    colour: selectedColour,
+    size: selectedSize,
+    price: variantPrice
+  };
+}
+
+function getSelectedQuantity() {
+  const domQuantity = Number.parseInt(qtyValue?.textContent || "", 10);
+  const quantity = Number.isFinite(domQuantity) && domQuantity > 0 ? domQuantity : selectedQuantity;
+  return Math.min(9, Math.max(1, quantity));
+}
+
+function getTotalPrice(quantity = getSelectedQuantity(), variant = getSelectedVariant()) {
+  return Number((variant.price * quantity).toFixed(2));
+}
+
+function buildPixelProductPayload({ value, quantity = getSelectedQuantity(), variant = getSelectedVariant() } = {}) {
+  const pixelValue = Number(value ?? getTotalPrice(quantity, variant));
+
+  return {
+    content_name: variant.name,
+    content_category: selectedProduct.category,
+    content_type: "product",
+    content_ids: [variant.id],
+    value: Number.isFinite(pixelValue) ? Number(pixelValue.toFixed(2)) : selectedProduct.price,
+    currency: "GBP",
+    contents: [
+      {
+        id: variant.id,
+        quantity,
+        item_price: Number(variant.price.toFixed(2))
+      }
+    ]
+  };
+}
+
+trackMetaEvent("ViewContent", buildPixelProductPayload({
+  value: getSelectedVariant().price,
+  quantity: 1
+}));
 
 function formatPrice(value) {
   return `\u00A3${value.toFixed(2)}`;
 }
 
 function updateSelectionSummary() {
+  const currentVariant = getSelectedVariant();
+  const currentQuantity = getSelectedQuantity();
+
   if (selectionSummary) {
-    selectionSummary.textContent = `Colour: ${selectedColour} | Size: ${selectedSize} | Qty: ${selectedQuantity}`;
+    selectionSummary.textContent = `Colour: ${currentVariant.colour} | Size: ${currentVariant.size} | Qty: ${currentQuantity}`;
   }
 
   if (selectionTotal) {
-    selectionTotal.textContent = `Total: ${formatPrice(unitPrice * selectedQuantity)}`;
+    selectionTotal.textContent = `Total: ${formatPrice(getTotalPrice(currentQuantity, currentVariant))}`;
   }
 
   if (checkoutButton) {
-    checkoutButton.textContent = selectedQuantity > 1
-      ? `Buy ${selectedQuantity} Now - Limited Stock`
+    checkoutButton.textContent = currentQuantity > 1
+      ? `Buy ${currentQuantity} Now - Limited Stock`
       : "Buy Now - Limited Stock";
   }
 }
@@ -395,21 +458,7 @@ function trackConfiguredSelection() {
   }
 
   hasTrackedAddToCart = true;
-  trackMetaEvent("AddToCart", {
-    content_name: "London Fit Sculpt Flare Leggings",
-    content_category: "Leggings",
-    content_type: "product",
-    content_ids: ["london-fit-sculpt-flare-legging"],
-    value: Number((unitPrice * selectedQuantity).toFixed(2)),
-    currency: "GBP",
-    contents: [
-      {
-        id: "london-fit-sculpt-flare-legging",
-        quantity: selectedQuantity,
-        item_price: unitPrice
-      }
-    ]
-  });
+  trackMetaEvent("AddToCart", buildPixelProductPayload());
 }
 
 if (productConfigImage && colorSwatches.length) {
@@ -606,23 +655,14 @@ if (urlState.get("checkout") === "success") {
 
   if (!window.sessionStorage.getItem(purchaseStorageKey)) {
     const purchasedQuantity = Math.max(1, Number.parseInt(urlState.get("qty"), 10) || selectedQuantity);
-    const purchaseValue = Number.parseFloat(urlState.get("total")) || Number((unitPrice * purchasedQuantity).toFixed(2));
+    const purchasedVariant = getSelectedVariant();
+    const purchaseValue = Number.parseFloat(urlState.get("total")) || getTotalPrice(purchasedQuantity, purchasedVariant);
 
-    trackMetaEvent("Purchase", {
-      content_name: "London Fit Sculpt Flare Leggings",
-      content_category: "Leggings",
-      content_type: "product",
-      content_ids: ["london-fit-sculpt-flare-legging"],
-      value: Number(purchaseValue.toFixed(2)),
-      currency: "GBP",
-      contents: [
-        {
-          id: "london-fit-sculpt-flare-legging",
-          quantity: purchasedQuantity,
-          item_price: unitPrice
-        }
-      ]
-    });
+    trackMetaEvent("Purchase", buildPixelProductPayload({
+      value: purchaseValue,
+      quantity: purchasedQuantity,
+      variant: purchasedVariant
+    }));
 
     window.sessionStorage.setItem(purchaseStorageKey, "tracked");
   }
@@ -632,20 +672,14 @@ checkoutButton?.addEventListener("click", async () => {
   const checkoutNote = document.getElementById("checkout-note");
 
   try {
+    const checkoutQuantity = getSelectedQuantity();
+
     trackMetaEvent("InitiateCheckout", {
-      content_name: "London Fit Sculpt Flare Leggings",
-      content_category: "Leggings",
-      content_type: "product",
-      content_ids: ["london-fit-sculpt-flare-legging"],
-      value: Number((unitPrice * selectedQuantity).toFixed(2)),
-      currency: "GBP",
-      contents: [
-        {
-          id: "london-fit-sculpt-flare-legging",
-          quantity: selectedQuantity,
-          item_price: unitPrice
-        }
-      ]
+      ...buildPixelProductPayload({
+        value: getTotalPrice(checkoutQuantity),
+        quantity: checkoutQuantity
+      }),
+      num_items: checkoutQuantity
     });
 
     checkoutButton.classList.add("is-loading");
@@ -664,7 +698,7 @@ checkoutButton?.addEventListener("click", async () => {
       body: JSON.stringify({
         colour: selectedColour,
         size: selectedSize,
-        quantity: selectedQuantity
+        quantity: checkoutQuantity
       })
     });
 
