@@ -1,4 +1,5 @@
 const Stripe = require("stripe");
+const { sendMetaEvent } = require("./meta-capi");
 
 function escapeHtml(value) {
   return String(value || "")
@@ -13,6 +14,10 @@ function formatAmount(amountTotal, currency) {
   const amount = Number(amountTotal || 0) / 100;
   const safeCurrency = String(currency || "gbp").toUpperCase();
   return `${safeCurrency} ${amount.toFixed(2)}`;
+}
+
+function numericAmount(amountTotal) {
+  return Number((Number(amountTotal || 0) / 100).toFixed(2));
 }
 
 async function sendProcessingEmail({ to, order }) {
@@ -125,6 +130,7 @@ exports.handler = async (event) => {
       const session = stripeEvent.data.object;
       const customerEmail = session.customer_details?.email || session.customer_email;
       const customerName = session.customer_details?.name || "Customer";
+      const customerPhone = session.customer_details?.phone;
       const order = {
         colour: session.metadata?.colour || "Mocha Taupe",
         size: session.metadata?.size || "S",
@@ -138,6 +144,35 @@ exports.handler = async (event) => {
         to: customerEmail,
         order
       });
+
+      try {
+        await sendMetaEvent({
+          eventName: "Purchase",
+          eventId: session.metadata?.purchase_event_id || session.id,
+          eventSourceUrl: process.env.URL || session.success_url,
+          userData: {
+            email: customerEmail,
+            phone: customerPhone
+          },
+          customData: {
+            content_name: `London Fit Sculpt Flare Leggings - ${order.colour} / ${order.size}`,
+            content_category: "Leggings",
+            content_type: "product",
+            content_ids: [`london-fit-sculpt-flare-legging-${order.colour.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${order.size.toLowerCase()}`],
+            value: numericAmount(session.amount_total),
+            currency: String(session.currency || "gbp").toUpperCase(),
+            contents: [
+              {
+                id: `london-fit-sculpt-flare-legging-${order.colour.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${order.size.toLowerCase()}`,
+                quantity: Number.parseInt(order.quantity, 10) || 1,
+                item_price: 22.99
+              }
+            ]
+          }
+        });
+      } catch (metaError) {
+        console.error("Meta Purchase CAPI error:", metaError);
+      }
     }
 
     return {

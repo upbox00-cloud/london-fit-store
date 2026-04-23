@@ -34,6 +34,7 @@ exports.handler = async (event) => {
     const safeColour = allowedColours.has(payload.colour) ? payload.colour : "Mocha Taupe";
     const safeSize = allowedSizes.has(payload.size) ? payload.size : "S";
     const safeQuantity = Math.min(9, Math.max(1, Number.parseInt(payload.quantity, 10) || 1));
+    const safePurchaseEventId = String(payload.purchase_event_id || "").slice(0, 120);
     const siteUrl = process.env.URL || process.env.DEPLOY_PRIME_URL || "http://localhost:8888";
     const selectedImage = colourImageMap[safeColour] || "model-taupe.png";
     const totalAmount = 2299 * safeQuantity;
@@ -41,7 +42,7 @@ exports.handler = async (event) => {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       submit_type: "pay",
-      success_url: `${siteUrl}/?checkout=success&session_id={CHECKOUT_SESSION_ID}&qty=${safeQuantity}&total=${(totalAmount / 100).toFixed(2)}`,
+      success_url: `${siteUrl}/?checkout=success&session_id={CHECKOUT_SESSION_ID}&qty=${safeQuantity}&total=${(totalAmount / 100).toFixed(2)}&purchase_event_id=${encodeURIComponent(safePurchaseEventId)}`,
       cancel_url: `${siteUrl}/?checkout=cancel`,
       customer_creation: "always",
       billing_address_collection: "required",
@@ -77,7 +78,8 @@ exports.handler = async (event) => {
         metadata: {
           colour: safeColour,
           size: safeSize,
-          quantity: String(safeQuantity)
+          quantity: String(safeQuantity),
+          purchase_event_id: safePurchaseEventId
         }
       },
       line_items: [
@@ -103,7 +105,8 @@ exports.handler = async (event) => {
         size: safeSize,
         quantity: String(safeQuantity),
         store_name: "London Fit",
-        order_email_flow: "processing_confirmation"
+        order_email_flow: "processing_confirmation",
+        purchase_event_id: safePurchaseEventId
       }
     });
 

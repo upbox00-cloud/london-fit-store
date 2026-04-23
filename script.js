@@ -55,8 +55,54 @@ const quizQuestions = [
   }
 ];
 
-function trackMetaEvent(eventName, payload = {}) {
+function createMetaEventId(eventName) {
+  const safeEventName = String(eventName || "event").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const randomPart = window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  return `${safeEventName}-${randomPart}`;
+}
+
+function getCookieValue(name) {
+  return document.cookie
+    .split("; ")
+    .find((cookie) => cookie.startsWith(`${name}=`))
+    ?.split("=")
+    .slice(1)
+    .join("=");
+}
+
+function sendMetaServerEvent(eventName, payload, eventId) {
+  if (!eventId || !navigator.sendBeacon) {
+    return;
+  }
+
+  const serverPayload = {
+    event_name: eventName,
+    event_id: eventId,
+    event_source_url: window.location.href,
+    fbp: getCookieValue("_fbp"),
+    fbc: getCookieValue("_fbc"),
+    custom_data: payload
+  };
+
+  const body = JSON.stringify(serverPayload);
+  const sent = navigator.sendBeacon("/.netlify/functions/track-meta-event", new Blob([body], { type: "application/json" }));
+
+  if (!sent) {
+    fetch("/.netlify/functions/track-meta-event", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body,
+      keepalive: true
+    }).catch(() => {});
+  }
+}
+
+function trackMetaEvent(eventName, payload = {}, options = {}) {
   const normalisedPayload = { ...payload };
+  const eventId = options.eventId || createMetaEventId(eventName);
+  const sendServer = options.sendServer !== false;
 
   if (Object.prototype.hasOwnProperty.call(normalisedPayload, "value")) {
     const numericValue = Number(normalisedPayload.value);
@@ -65,8 +111,14 @@ function trackMetaEvent(eventName, payload = {}) {
   }
 
   if (typeof window !== "undefined" && typeof window.fbq === "function") {
-    window.fbq("track", eventName, normalisedPayload);
+    window.fbq("track", eventName, normalisedPayload, { eventID: eventId });
   }
+
+  if (sendServer) {
+    sendMetaServerEvent(eventName, normalisedPayload, eventId);
+  }
+
+  return eventId;
 }
 
 const outcomeMap = {
@@ -657,12 +709,13 @@ if (urlState.get("checkout") === "success") {
     const purchasedQuantity = Math.max(1, Number.parseInt(urlState.get("qty"), 10) || selectedQuantity);
     const purchasedVariant = getSelectedVariant();
     const purchaseValue = Number.parseFloat(urlState.get("total")) || getTotalPrice(purchasedQuantity, purchasedVariant);
+    const purchaseEventId = urlState.get("purchase_event_id") || createMetaEventId("Purchase");
 
     trackMetaEvent("Purchase", buildPixelProductPayload({
       value: purchaseValue,
       quantity: purchasedQuantity,
       variant: purchasedVariant
-    }));
+    }), { eventId: purchaseEventId, sendServer: false });
 
     window.sessionStorage.setItem(purchaseStorageKey, "tracked");
   }
@@ -673,6 +726,7 @@ checkoutButton?.addEventListener("click", async () => {
 
   try {
     const checkoutQuantity = getSelectedQuantity();
+    const purchaseEventId = createMetaEventId("Purchase");
 
     trackMetaEvent("InitiateCheckout", {
       ...buildPixelProductPayload({
@@ -698,7 +752,8 @@ checkoutButton?.addEventListener("click", async () => {
       body: JSON.stringify({
         colour: selectedColour,
         size: selectedSize,
-        quantity: checkoutQuantity
+        quantity: checkoutQuantity,
+        purchase_event_id: purchaseEventId
       })
     });
 
