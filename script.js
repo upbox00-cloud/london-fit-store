@@ -102,7 +102,7 @@ function sendMetaServerEvent(eventName, payload, eventId) {
 function trackMetaEvent(eventName, payload = {}, options = {}) {
   const normalisedPayload = { ...payload };
   const eventId = options.eventId || createMetaEventId(eventName);
-  const sendServer = options.sendServer === true;
+  const sendServer = options.sendServer !== false;
 
   if (Object.prototype.hasOwnProperty.call(normalisedPayload, "value")) {
     const numericValue = Number(normalisedPayload.value);
@@ -479,7 +479,7 @@ function buildPixelProductPayload({ value, quantity = getSelectedQuantity(), var
 trackMetaEvent("ViewContent", buildPixelProductPayload({
   value: getSelectedVariant().price,
   quantity: 1
-}), { sendServer: false });
+}));
 
 function formatPrice(value) {
   return `\u00A3${value.toFixed(2)}`;
@@ -510,7 +510,7 @@ function trackConfiguredSelection() {
   }
 
   hasTrackedAddToCart = true;
-  trackMetaEvent("AddToCart", buildPixelProductPayload(), { sendServer: false });
+  trackMetaEvent("AddToCart", buildPixelProductPayload());
 }
 
 if (productConfigImage && colorSwatches.length) {
@@ -734,7 +734,7 @@ checkoutButton?.addEventListener("click", async () => {
         quantity: checkoutQuantity
       }),
       num_items: checkoutQuantity
-    }, { sendServer: false });
+    });
 
     checkoutButton.classList.add("is-loading");
     checkoutButton.textContent = "Opening checkout...";
