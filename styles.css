@@ -59,10 +59,6 @@ main {
   flex-direction: column;
 }
 
-.color-section {
-  order: -1;
-}
-
 .page-noise {
   position: fixed;
   inset: 0;
