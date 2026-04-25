@@ -264,8 +264,10 @@ document.querySelectorAll(".reveal, .radial-wrap").forEach((element) => {
 });
 
 const parallaxZone = document.querySelector("[data-parallax]");
+const isTouchDevice = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+const isCompactScreen = window.innerWidth <= 820;
 
-if (parallaxZone) {
+if (parallaxZone && !isTouchDevice && !isCompactScreen) {
   const floatingCards = parallaxZone.querySelectorAll(".floating-card");
 
   document.addEventListener("pointermove", (event) => {
@@ -349,8 +351,13 @@ function attachReviewCardInteractions(card) {
 
 if (ugcStrip) {
   let autoScroll = null;
+  const enableAutoScroll = !isTouchDevice && !isCompactScreen;
 
   const startAutoScroll = () => {
+    if (!enableAutoScroll) {
+      return;
+    }
+
     if (autoScroll) {
       return;
     }
@@ -382,8 +389,11 @@ if (ugcStrip) {
   }, { threshold: 0.35 });
 
   ugcObserver.observe(ugcStrip);
-  ugcStrip.addEventListener("pointerenter", stopAutoScroll);
-  ugcStrip.addEventListener("pointerleave", startAutoScroll);
+
+  if (enableAutoScroll) {
+    ugcStrip.addEventListener("pointerenter", stopAutoScroll);
+    ugcStrip.addEventListener("pointerleave", startAutoScroll);
+  }
 }
 
 document.querySelectorAll(".review-photo").forEach(attachReviewCardInteractions);

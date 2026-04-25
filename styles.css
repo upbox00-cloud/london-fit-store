@@ -2245,3 +2245,114 @@ button, input, textarea, select { font: inherit; }
     }
   }
 
+@media (hover: none), (pointer: coarse), (max-width: 820px) {
+  body::before,
+  body::after,
+  .page-noise {
+    position: absolute;
+  }
+
+  body::before {
+    opacity: 0.18;
+  }
+
+  body::after,
+  .page-noise {
+    opacity: 0.04;
+  }
+
+  .topbar,
+  .btn,
+  .proof-pill,
+  .hero-trigger-bar,
+  .review-summary,
+  .motion-video-wrap,
+  .motion-float,
+  .config-block,
+  .quiz-option,
+  .review-compose,
+  .review-modal-backdrop,
+  .mobile-buy-bar,
+  .brand-strip {
+    backdrop-filter: none;
+  }
+
+  .hero-visual {
+    min-height: auto;
+    perspective: none;
+  }
+
+  .hero-orb,
+  .hero-float,
+  .model-grid,
+  .model-halo,
+  .phone-ui {
+    display: none;
+  }
+
+  .model-stage {
+    position: relative;
+    inset: auto;
+    min-height: auto;
+    padding: 10px 0 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .model-stage::after {
+    display: none;
+  }
+
+  .reveal {
+    filter: none;
+    transform: translateY(18px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+  }
+
+  .reveal.visible {
+    filter: none;
+    transform: translateY(0);
+  }
+
+  .ugc-card:hover,
+  .btn:hover,
+  .quiz-option:hover,
+  .qty-btn:hover,
+  .color-swatch:hover,
+  .size-chip:hover,
+  .star-btn:hover {
+    transform: none;
+  }
+
+  .ticker-track,
+  .brand-strip-track {
+    animation-duration: 28s;
+  }
+
+  .motion-layout {
+    gap: 14px;
+  }
+
+  .motion-video-wrap {
+    width: 100%;
+    padding: 10px;
+    border-radius: 22px;
+  }
+
+  .motion-video {
+    max-width: 100%;
+    border-radius: 16px;
+    aspect-ratio: 9 / 16;
+    object-fit: cover;
+    background: #0b0815;
+  }
+
+  .motion-overlay {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    padding: 12px 14px;
+  }
+}
+
