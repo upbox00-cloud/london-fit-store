@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en-GB">
   <head>
     <meta charset="UTF-8">
@@ -163,24 +163,49 @@
           <div class="single-price-panel">
             <span class="eyebrow">Price</span>
             <div class="price-stack">
-              <!-- FIX: removed fake "Was £39.99" crossed out price -->
+              <span class="price-was">Was &pound;39.99</span>
               <h2>&pound;22.99</h2>
             </div>
+            <p class="unit-price-note">All colours and sizes are <strong>&pound;22.99 each</strong> today.</p>
             <div class="offer-stack">
               <div class="urgency-pill">
-                <strong>Free UK Shipping</strong>
-                <span>Delivered in 5&ndash;10 working days</span>
+                <strong>Selling fast in London</strong>
+                <span>Only a few left in the most wanted sizes</span>
               </div>
-              <!-- FIX: removed fake countdown timer -->
+              <div class="countdown-card" aria-label="promotion countdown">
+                <span class="countdown-label">Promo ends in</span>
+                <div class="countdown-timer" id="promo-countdown">
+                  <span><strong data-unit="hours">07</strong><small>hrs</small></span>
+                  <span><strong data-unit="minutes">42</strong><small>min</small></span>
+                  <span><strong data-unit="seconds">19</strong><small>sec</small></span>
+                </div>
+              </div>
             </div>
-            <p>Easy returns within 15 days.</p>
+            <p>Today only price. Easy returns.</p>
             <div class="selection-summary" id="selection-summary">
               Colour: Mocha Taupe | Size: S | Qty: 1
             </div>
+            <div class="selection-total" id="selection-total">Total: &pound;22.99</div>
             <div class="hero-actions">
               <button class="btn btn-primary magnetic" id="checkout-button" type="button">Buy Now - Limited Stock</button>
             </div>
+            <p class="trust-note">
+              🚚 Free UK delivery · Dispatched within 1–3 business days · Delivered in 5–10 working days
+            </p>
+            <div class="delivery-info">
+              <p>🚚 <strong>Free UK Shipping</strong> — Delivered in 5–10 working days</p>
+              <p>🔒 Secure checkout via Stripe · Apple Pay accepted</p>
+              <p>↩️ 15-day returns if the fit isn't right</p>
+            </div>
+            <div class="micro-trust-row" aria-label="checkout reassurance">
+              <span>Secure payment with Stripe</span>
+              <span>Apple Pay available</span>
+              <span>Fast checkout</span>
+            </div>
             <p class="checkout-note" id="checkout-note">Your checkout will include the selected colour, size and quantity.</p>
+            <div class="trust-seals trust-seals-compact">
+              <img src="./images/trust-badges.png" alt="Trust badges showing 30-day guarantee, free UK shipping, secure checkout and accepted card payments">
+            </div>
           </div>
         </div>
       </div>
@@ -200,122 +225,115 @@
         <article class="pain-card reveal"><p>She wants to feel polished in seconds.</p></article>
       </div>
     </section>
-
     <section class="section proof-section">
       <div class="section-heading reveal">
         <span class="eyebrow">Social proof</span>
-        <!-- FIX: removed fake "500 reviews 5.0 stars" header -->
-        <h2>What customers are saying.</h2>
+        <h2>Real buyers. Real mirror photos.</h2>
+        <p>Loved by women across the UK. Tap any review photo to open it and read the original fit note.</p>
       </div>
 
-      <div class="proof-highlights reveal">
-        <article class="proof-pill">
-          <!-- FIX: changed to honest 4.7 rating -->
-          <strong>&#9733;&#9733;&#9733;&#9733;&#9733; 4.7 / 5</strong>
-          <span>Based on 14 verified reviews</span>
-        </article>
-        <article class="proof-pill">
-          <strong>Most helpful buying cue</strong>
-          <span>Real sizing and fit notes</span>
-        </article>
-        <article class="proof-pill">
-          <strong>Most reassuring detail</strong>
-          <span>Colour and fabric look true in real life</span>
-        </article>
+      <div class="review-summary reveal">
+        <div class="reviews-header">
+          <span class="stars">★★★★☆</span>
+          <strong>4.7 out of 5</strong>
+          <span class="review-count">Based on 14 verified reviews</span>
+        </div>
+        <p>Trusted by women across London for fit, feel and flattering shape.</p>
       </div>
 
       <div class="ugc-strip reveal">
-        <!-- FIX: replaced fake internal notes with real-sounding honest reviews -->
-        <article class="ugc-card tilt-card"
-          data-review-image="./images/ugc-1.jpeg"
-          data-review-alt="Customer review showing taupe leggings on body"
-          data-review-text="★★★★★ Sarah M. — Verified buyer, London: Ordered the Mocha Taupe in a medium. Arrived in about a week. The waist sits really high and stays put — no rolling at all. Wore them to a reformer class and then straight to a coffee after. Genuinely looked like an outfit."
-          tabindex="0" role="button" aria-label="Open customer review from Sarah M.">
+        <article class="ugc-card tilt-card review-photo review-card" tabindex="0" role="button" aria-label="Open customer review 1" data-review-image="./images/ugc-1.jpeg" data-review-alt="Customer review showing taupe leggings on body" data-review-text="Ordered the Mocha Taupe in a medium. Arrived in about a week. The waist sits really high and stays put — no rolling at all. Wore them to a reformer class and then straight to a coffee after. Genuinely looked like an outfit.">
           <img src="./images/ugc-1.jpeg" alt="Customer review showing taupe leggings on body">
-          <div class="ugc-copy">
-            <span class="ugc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-            <strong>Sarah M. &mdash; London</strong>
-            <p>The waist sits really high and stays put. Wore them to a reformer class and then straight to a coffee after. Genuinely looked like an outfit.</p>
+          <div class="ugc-user-note">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"Ordered the Mocha Taupe in a medium. Arrived in about a week. The waist sits really high and stays put — no rolling at all. Wore them to a reformer class and then straight to a coffee after. Genuinely looked like an outfit."</p>
+            <span class="review-author">Sarah M. — <em>Verified buyer, London</em></span>
           </div>
         </article>
-        <article class="ugc-card tilt-card"
-          data-review-image="./images/ugc-2.jpeg"
-          data-review-alt="Customer mirror review showing black leggings"
-          data-review-text="★★★★★ Jess T. — Verified buyer, Manchester: I was skeptical ordering from a smaller brand but the quality surprised me. Fabric is thick enough to not be see-through and the flare is subtle — not over the top. Already ordered the black."
-          tabindex="0" role="button" aria-label="Open customer review from Jess T.">
+        <article class="ugc-card tilt-card review-photo review-card" tabindex="0" role="button" aria-label="Open customer review 2" data-review-image="./images/ugc-2.jpeg" data-review-alt="Customer mirror review showing black leggings" data-review-text="I was skeptical ordering from a smaller brand but the quality surprised me. Fabric is thick enough to not be see-through and the flare is subtle — not over the top. Already ordered the black.">
           <img src="./images/ugc-2.jpeg" alt="Customer mirror review showing black leggings">
-          <div class="ugc-copy">
-            <span class="ugc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-            <strong>Jess T. &mdash; Manchester</strong>
-            <p>Fabric is thick enough to not be see-through and the flare is subtle. Already ordered the black.</p>
+          <div class="ugc-user-note">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"I was skeptical ordering from a smaller brand but the quality surprised me. Fabric is thick enough to not be see-through and the flare is subtle — not over the top. Already ordered the black."</p>
+            <span class="review-author">Jess T. — <em>Verified buyer, Manchester</em></span>
           </div>
         </article>
-        <article class="ugc-card tilt-card"
-          data-review-image="./images/ugc-3.jpeg"
-          data-review-alt="Customer review showing black leggings hem and shoes"
-          data-review-text="★★★★☆ Amelia R. — Verified buyer, Bristol: Fits true to size. The cream colour is beautiful in person. Delivery took 8 days which is fine. Only thing I'd say is size up if you're between sizes — I'm usually an S/M and the S fits perfectly but snug."
-          tabindex="0" role="button" aria-label="Open customer review from Amelia R.">
+        <article class="ugc-card tilt-card review-photo review-card" tabindex="0" role="button" aria-label="Open customer review 3" data-review-image="./images/ugc-3.jpeg" data-review-alt="Customer review showing black leggings hem and shoes" data-review-text="Fits true to size. The cream colour is beautiful in person. Delivery took 8 days which is fine. Only thing I'd say is size up if you're between sizes — I'm usually an S/M and the S fits perfectly but snug.">
           <img src="./images/ugc-3.jpeg" alt="Customer review showing black leggings hem and shoes">
-          <div class="ugc-copy">
-            <span class="ugc-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
-            <strong>Amelia R. &mdash; Bristol</strong>
-            <p>Fits true to size. Delivery took 8 days which is fine. Size up if you're between sizes.</p>
+          <div class="ugc-user-note">
+            <div class="review-stars">★★★★☆</div>
+            <p class="review-text">"Fits true to size. The cream colour is beautiful in person. Delivery took 8 days which is fine. Only thing I'd say is size up if you're between sizes — I'm usually an S/M and the S fits perfectly but snug."</p>
+            <span class="review-author">Amelia R. — <em>Verified buyer, Bristol</em></span>
           </div>
         </article>
-        <article class="ugc-card tilt-card"
-          data-review-image="./images/ugc-4.jpeg"
-          data-review-alt="Customer mirror selfie wearing taupe leggings"
-          data-review-text="★★★★★ Chloe W. — Verified buyer, Leeds: Got the Rose Pink for Pilates. The high waist panel actually holds everything in without feeling restrictive. My instructor asked where they were from. That says enough."
-          tabindex="0" role="button" aria-label="Open customer review from Chloe W.">
+        <article class="ugc-card tilt-card review-photo review-card" tabindex="0" role="button" aria-label="Open customer review 4" data-review-image="./images/ugc-4.jpeg" data-review-alt="Customer mirror selfie wearing taupe leggings" data-review-text="Got the Rose Pink for Pilates. The high waist panel actually holds everything in without feeling restrictive. My instructor asked where they were from. That says enough.">
           <img src="./images/ugc-4.jpeg" alt="Customer mirror selfie wearing taupe leggings">
-          <div class="ugc-copy">
-            <span class="ugc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-            <strong>Chloe W. &mdash; Leeds</strong>
-            <p>The high waist panel holds everything in without feeling restrictive. My instructor asked where they were from.</p>
+          <div class="ugc-user-note">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"Got the Rose Pink for Pilates. The high waist panel actually holds everything in without feeling restrictive. My instructor asked where they were from. That says enough."</p>
+            <span class="review-author">Chloe W. — <em>Verified buyer, Leeds</em></span>
           </div>
         </article>
-        <article class="ugc-card tilt-card"
-          data-review-image="./images/ugc-5.jpeg"
-          data-review-alt="Customer close-up wearing cream leggings"
-          data-review-text="★★★★☆ Niamh B. — Verified buyer, Birmingham: Really happy with the fit and feel. Took off one star because I had to email about tracking — but they replied quickly and the leggings arrived in good condition. Would buy again."
-          tabindex="0" role="button" aria-label="Open customer review from Niamh B.">
+        <article class="ugc-card tilt-card review-photo review-card" tabindex="0" role="button" aria-label="Open customer review 5" data-review-image="./images/ugc-5.jpeg" data-review-alt="Customer close-up wearing cream leggings" data-review-text="Really happy with the fit and feel. Took off one star because I had to email about tracking — but they replied quickly and the leggings arrived in good condition. Would buy again.">
           <img src="./images/ugc-5.jpeg" alt="Customer close-up wearing cream leggings">
-          <div class="ugc-copy">
-            <span class="ugc-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
-            <strong>Niamh B. &mdash; Birmingham</strong>
-            <p>Really happy with the fit and feel. They replied quickly to my query and the leggings arrived in good condition.</p>
+          <div class="ugc-user-note">
+            <div class="review-stars">★★★★☆</div>
+            <p class="review-text">"Really happy with the fit and feel. Took off one star because I had to email about tracking — but they replied quickly and the leggings arrived in good condition. Would buy again."</p>
+            <span class="review-author">Niamh B. — <em>Verified buyer, Birmingham</em></span>
           </div>
         </article>
-        <article class="ugc-card tilt-card"
-          data-review-image="./images/ugc-6.jpeg"
-          data-review-alt="Customer fitting room photo wearing black leggings"
-          data-review-text="★★★★★ Rachel K. — Verified buyer, London: Bought the Classic Black. They hold their shape after washing which is more than I can say for my last three pairs from bigger brands. Comfortable enough to wear all day."
-          tabindex="0" role="button" aria-label="Open customer review from Rachel K.">
+        <article class="ugc-card tilt-card review-photo" tabindex="0" role="button" aria-label="Open customer review 6" data-review-image="./images/ugc-6.jpeg" data-review-alt="Customer fitting room photo wearing black leggings" data-review-text="Excellent leggings. I thought they would be small at first, but they stretch perfectly and do not squeeze or press. I chose XL and they fit well with trainers. I will definitely buy more.">
           <img src="./images/ugc-6.jpeg" alt="Customer fitting room photo wearing black leggings">
-          <div class="ugc-copy">
-            <span class="ugc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-            <strong>Rachel K. &mdash; London</strong>
-            <p>They hold their shape after washing which is more than I can say for my last three pairs from bigger brands.</p>
-          </div>
         </article>
-        <article class="ugc-card tilt-card"
-          data-review-image="./images/ugc-7.jpeg"
-          data-review-alt="Customer flat lay photo of cream leggings"
-          data-review-text="★★★★★ Georgia P. — Verified buyer, Edinburgh: The Soft Cream is stunning in person — the fabric doesn't look cheap at all. Fits exactly as described. Fast delivery too."
-          tabindex="0" role="button" aria-label="Open customer review from Georgia P.">
+        <article class="ugc-card tilt-card review-photo" tabindex="0" role="button" aria-label="Open customer review 7" data-review-image="./images/ugc-7.jpeg" data-review-alt="Customer flat lay photo of cream leggings" data-review-text="The sportswear has very good quality, comfortable fabrics, durable and with excellent fit. Ideal for training with style and safety.">
           <img src="./images/ugc-7.jpeg" alt="Customer flat lay photo of cream leggings">
-          <div class="ugc-copy">
-            <span class="ugc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-            <strong>Georgia P. &mdash; Edinburgh</strong>
-            <p>The Soft Cream is stunning in person — the fabric doesn't look cheap at all. Fits exactly as described.</p>
-          </div>
         </article>
       </div>
-      <div class="section-cta reveal">
-        <a class="btn btn-primary magnetic" href="#pricing">Shop from &pound;22.99</a>
+
+      <div class="review-compose reveal">
+        <div class="review-compose-copy">
+          <span class="eyebrow">Leave a review</span>
+          <h3>Rate your pair, upload a photo and share your fit note.</h3>
+          <p>Perfect for collecting fresh customer proof after delivery.</p>
+        </div>
+
+        <form class="review-form" id="review-form">
+          <label class="review-field">
+            <span>Your name</span>
+            <input type="text" name="name" id="review-name" placeholder="e.g. Amelia from Chelsea">
+          </label>
+
+          <div class="review-field">
+            <span>Your rating</span>
+            <div class="star-input" id="star-input" aria-label="Choose a star rating">
+              <button type="button" class="star-btn active" data-rating="1">&#9733;</button>
+              <button type="button" class="star-btn active" data-rating="2">&#9733;</button>
+              <button type="button" class="star-btn active" data-rating="3">&#9733;</button>
+              <button type="button" class="star-btn active" data-rating="4">&#9733;</button>
+              <button type="button" class="star-btn active" data-rating="5">&#9733;</button>
+            </div>
+          </div>
+
+          <label class="review-field">
+            <span>Your comment</span>
+            <textarea name="comment" id="review-comment" rows="4" placeholder="Tell shoppers how the fit, fabric and length felt on you."></textarea>
+          </label>
+
+          <label class="review-upload">
+            <input type="file" id="review-photo-input" accept="image/*">
+            <span>Upload your photo</span>
+            <small>Add a mirror selfie or close-up fit shot.</small>
+          </label>
+
+          <div class="review-preview" id="review-preview" hidden>
+            <img id="review-preview-image" src="" alt="Review photo preview">
+          </div>
+
+          <button class="btn btn-primary" id="review-submit" type="button">Submit review</button>
+          <p class="review-status" id="review-status">Add your stars, comment and photo to place your review in the gallery.</p>
+        </form>
       </div>
     </section>
-
     <section class="section motion-section">
       <div class="section-heading reveal">
         <span class="eyebrow">Fit in motion</span>
@@ -339,7 +357,10 @@
             <strong>Looks premium</strong>
             <span>Sharper in motion than in stills.</span>
           </div>
-          <video class="motion-video" src="./model-motion.mp4" autoplay muted loop playsinline controls></video>
+          <video class="motion-video" autoplay muted loop playsinline controls preload="metadata" poster="./images/model-pink.png">
+            <source src="./images/model-motion.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
         </div>
       </div>
       <div class="section-cta reveal">
@@ -519,14 +540,21 @@
   <div class="mobile-buy-bar" aria-label="mobile quick buy">
     <div class="mobile-buy-copy">
       <strong>London Fit</strong>
-      <!-- FIX: corrected £22,99 to £22.99 -->
       <span>&pound;22.99</span>
     </div>
     <a class="btn btn-primary" href="#pricing">Shop now</a>
   </div>
 
-  <!-- FIX: removed fake sales popup entirely -->
+  <div class="review-modal" id="review-modal" aria-hidden="true">
+    <div class="review-modal-backdrop" id="review-modal-backdrop"></div>
+    <div class="review-modal-dialog" role="dialog" aria-modal="true" aria-label="Customer review">
+      <button class="review-modal-close" id="review-modal-close" type="button" aria-label="Close review">&times;</button>
+      <img class="review-modal-image" id="review-modal-image" src="" alt="Customer review image">
+      <p class="review-modal-text" id="review-modal-text"></p>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
 </html>
+

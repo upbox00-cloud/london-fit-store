@@ -800,5 +800,48 @@ if (topbar && window.innerWidth > 820) {
   window.addEventListener("scroll", updateTopbarState, { passive: true });
 }
 
-// FIX: removed fake countdown timer that reset on every page load
-// FIX: removed fake sales popup ("12 bought today / Someone in Chelsea just placed an order")
+const countdownRoot = document.getElementById("promo-countdown");
+
+if (countdownRoot) {
+  const countdownUnits = {
+    hours: countdownRoot.querySelector('[data-unit="hours"]'),
+    minutes: countdownRoot.querySelector('[data-unit="minutes"]'),
+    seconds: countdownRoot.querySelector('[data-unit="seconds"]')
+  };
+  const promoDurationMs = ((7 * 60 * 60) + (42 * 60) + 19) * 1000;
+  const promoStorageKey = "london-fit-promo-deadline";
+
+  const getPromoDeadline = () => {
+    const storedDeadline = Number.parseInt(window.localStorage.getItem(promoStorageKey) || "", 10);
+
+    if (Number.isFinite(storedDeadline) && storedDeadline > Date.now()) {
+      return storedDeadline;
+    }
+
+    const nextDeadline = Date.now() + promoDurationMs;
+    window.localStorage.setItem(promoStorageKey, String(nextDeadline));
+    return nextDeadline;
+  };
+
+  let promoDeadline = getPromoDeadline();
+
+  const updateCountdown = () => {
+    if (promoDeadline <= Date.now()) {
+      promoDeadline = Date.now() + promoDurationMs;
+      window.localStorage.setItem(promoStorageKey, String(promoDeadline));
+    }
+
+    const difference = Math.max(0, promoDeadline - Date.now());
+    const totalSeconds = Math.floor(difference / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    countdownUnits.hours.textContent = String(hours).padStart(2, "0");
+    countdownUnits.minutes.textContent = String(minutes).padStart(2, "0");
+    countdownUnits.seconds.textContent = String(seconds).padStart(2, "0");
+  };
+
+  updateCountdown();
+  window.setInterval(updateCountdown, 1000);
+}
