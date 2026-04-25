@@ -1105,6 +1105,32 @@ button, input, textarea, select { font: inherit; }
   line-height: 1.5;
 }
 
+.trust-note {
+  margin: 12px auto 0;
+  max-width: 44ch;
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.delivery-info {
+  display: grid;
+  gap: 8px;
+  width: min(100%, 420px);
+  margin: 12px auto 0;
+  padding: 14px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.delivery-info p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
 .checkout-note.is-error {
   color: #ffb7c8;
 }
@@ -1349,6 +1375,24 @@ button, input, textarea, select { font: inherit; }
   color: var(--muted);
   font-size: 0.88rem;
   line-height: 1.55;
+}
+
+.review-card .ugc-user-note {
+  min-height: 196px;
+  align-content: start;
+}
+
+.review-card .review-text {
+  color: var(--text);
+}
+
+.review-card .review-author {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.review-card .review-author em {
+  font-style: italic;
 }
 
 .review-compose {
@@ -1659,44 +1703,6 @@ button, input, textarea, select { font: inherit; }
 
 .mobile-buy-bar {
   display: none;
-}
-
-.sales-pop {
-  position: fixed;
-  left: 18px;
-  bottom: 18px;
-  z-index: 58;
-  width: min(340px, calc(100vw - 36px));
-  opacity: 0;
-  transform: translateY(18px);
-  pointer-events: none;
-  transition: opacity 0.34s ease, transform 0.34s ease;
-}
-
-.sales-pop.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.sales-pop-inner {
-  padding: 14px 16px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(8, 8, 18, 0.9);
-  backdrop-filter: blur(20px);
-  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.28);
-}
-
-.sales-pop strong {
-  display: block;
-  margin-bottom: 4px;
-  font-size: 0.96rem;
-}
-
-.sales-pop span {
-  color: var(--muted);
-  line-height: 1.5;
-  font-size: 0.9rem;
 }
 
 .site-footer {
@@ -2184,12 +2190,6 @@ button, input, textarea, select { font: inherit; }
     min-height: 48px;
     padding-inline: 18px;
     flex: none;
-  }
-  .sales-pop {
-    left: 12px;
-    right: 12px;
-    bottom: 88px;
-    width: auto;
   }
   .site-footer {
     margin-bottom: 110px;

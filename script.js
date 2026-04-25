@@ -825,36 +825,3 @@ if (countdownRoot) {
   updateCountdown();
   window.setInterval(updateCountdown, 1000);
 }
-
-const salesPop = document.getElementById("sales-pop");
-const salesPopTitle = document.getElementById("sales-pop-title");
-const salesPopText = document.getElementById("sales-pop-text");
-
-if (salesPop && salesPopTitle && salesPopText) {
-  const socialMessages = [
-    { title: "18 bought today", text: "Someone in Chelsea just placed an order." },
-    { title: "7 people are checking out", text: "Shoppers in London are viewing the black and taupe sizes now." },
-    { title: "New London order", text: "A customer in Camden just bought size M." },
-    { title: "146 people visited recently", text: "This product has been getting strong traffic in the last hour." },
-    { title: "Low stock alert", text: "Soft Cream in S and M is moving fastest today." },
-    { title: "Another order came in", text: "Someone in Notting Hill just bought Rose Pink." }
-  ];
-
-  let socialIndex = 0;
-
-  const showSocialPop = () => {
-    const message = socialMessages[socialIndex % socialMessages.length];
-    socialIndex += 1;
-
-    salesPopTitle.textContent = message.title;
-    salesPopText.textContent = message.text;
-    salesPop.classList.add("is-visible");
-
-    window.setTimeout(() => {
-      salesPop.classList.remove("is-visible");
-    }, 3400);
-  };
-
-  showSocialPop();
-  window.setInterval(showSocialPop, 6200);
-}
