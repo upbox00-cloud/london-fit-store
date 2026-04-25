@@ -149,7 +149,7 @@ exports.handler = async (event) => {
         await sendMetaEvent({
           eventName: "Purchase",
           eventId: session.metadata?.purchase_event_id || session.id,
-          eventSourceUrl: process.env.URL || session.success_url,
+          eventSourceUrl: process.env.SITE_URL || process.env.URL || session.success_url,
           userData: {
             email: customerEmail,
             phone: customerPhone

@@ -35,7 +35,7 @@ exports.handler = async (event) => {
     const safeSize = allowedSizes.has(payload.size) ? payload.size : "S";
     const safeQuantity = Math.min(9, Math.max(1, Number.parseInt(payload.quantity, 10) || 1));
     const safePurchaseEventId = String(payload.purchase_event_id || "").slice(0, 120);
-    const siteUrl = process.env.URL || process.env.DEPLOY_PRIME_URL || "http://localhost:8888";
+    const siteUrl = process.env.SITE_URL || process.env.URL || process.env.DEPLOY_PRIME_URL || "http://localhost:8888";
     const selectedImage = colourImageMap[safeColour] || "model-taupe.png";
     const totalAmount = 2299 * safeQuantity;
 
