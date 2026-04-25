@@ -1768,10 +1768,10 @@ button, input, textarea, select { font: inherit; }
 }
 
 .site-footer-links a {
-  min-height: 42px;
-  padding: 0 16px;
-  display: inline-flex;
-  align-items: center;
+    min-height: 42px;
+    padding: 0 16px;
+    display: inline-flex;
+    align-items: center;
   justify-content: center;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1865,6 +1865,19 @@ button, input, textarea, select { font: inherit; }
   .brand-strip-track {
     gap: 10px;
   }
+
+.policies-section {
+  padding-top: 12px;
+}
+
+.policies-links {
+  gap: 14px;
+}
+
+.policies-links a {
+  min-width: 190px;
+  justify-content: center;
+}
   .brand-strip-track span {
     min-width: 160px;
     min-height: 48px;
@@ -2221,11 +2234,14 @@ button, input, textarea, select { font: inherit; }
     border-radius: 22px;
   }
   .site-footer-links {
-    width: 100%;
-  }
+      width: 100%;
+    }
   .site-footer-links a {
-    flex: 1 1 calc(50% - 10px);
-    min-height: 44px;
+      flex: 1 1 calc(50% - 10px);
+      min-height: 44px;
+    }
+  .policies-links a {
+      min-width: 0;
+    }
   }
-}
 
