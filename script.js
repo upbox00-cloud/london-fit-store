@@ -283,31 +283,57 @@ if (parallaxZone && !isTouchDevice && !isCompactScreen) {
   });
 }
 
-document.querySelectorAll(".tilt-card").forEach((card) => {
-  card.addEventListener("pointermove", (event) => {
-    const rect = card.getBoundingClientRect();
-    const rotateX = ((event.clientY - rect.top) / rect.height - 0.5) * -10;
-    const rotateY = ((event.clientX - rect.left) / rect.width - 0.5) * 10;
-    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+if (!isTouchDevice && !isCompactScreen) {
+  document.querySelectorAll(".tilt-card").forEach((card) => {
+    card.addEventListener("pointermove", (event) => {
+      const rect = card.getBoundingClientRect();
+      const rotateX = ((event.clientY - rect.top) / rect.height - 0.5) * -10;
+      const rotateY = ((event.clientX - rect.left) / rect.width - 0.5) * 10;
+      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+    });
+
+    card.addEventListener("pointerleave", () => {
+      card.style.transform = "";
+    });
   });
 
-  card.addEventListener("pointerleave", () => {
-    card.style.transform = "";
-  });
-});
+  document.querySelectorAll(".magnetic").forEach((button) => {
+    button.addEventListener("pointermove", (event) => {
+      const rect = button.getBoundingClientRect();
+      const offsetX = event.clientX - rect.left - rect.width / 2;
+      const offsetY = event.clientY - rect.top - rect.height / 2;
+      button.style.transform = `translate(${offsetX * 0.08}px, ${offsetY * 0.08}px)`;
+    });
 
-document.querySelectorAll(".magnetic").forEach((button) => {
-  button.addEventListener("pointermove", (event) => {
-    const rect = button.getBoundingClientRect();
-    const offsetX = event.clientX - rect.left - rect.width / 2;
-    const offsetY = event.clientY - rect.top - rect.height / 2;
-    button.style.transform = `translate(${offsetX * 0.08}px, ${offsetY * 0.08}px)`;
+    button.addEventListener("pointerleave", () => {
+      button.style.transform = "";
+    });
   });
+}
 
-  button.addEventListener("pointerleave", () => {
-    button.style.transform = "";
-  });
-});
+const lazyMotionVideo = document.querySelector("[data-lazy-video]");
+
+if (lazyMotionVideo) {
+  const loadMotionVideo = () => {
+    const source = lazyMotionVideo.querySelector("source[data-src]");
+
+    if (source && !source.src) {
+      source.src = source.dataset.src;
+      lazyMotionVideo.load();
+    }
+  };
+
+  const videoObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        loadMotionVideo();
+        videoObserver.disconnect();
+      }
+    });
+  }, { rootMargin: "200px 0px" });
+
+  videoObserver.observe(lazyMotionVideo);
+}
 
 const ugcStrip = document.querySelector(".ugc-strip");
 const reviewModal = document.getElementById("review-modal");

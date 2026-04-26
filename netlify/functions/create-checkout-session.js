@@ -3,10 +3,10 @@ const Stripe = require("stripe");
 const allowedColours = new Set(["Mocha Taupe", "Rose Pink", "Classic Black", "Soft Cream"]);
 const allowedSizes = new Set(["S", "M", "L", "XL"]);
 const colourImageMap = {
-  "Mocha Taupe": "model-taupe.png",
-  "Rose Pink": "model-pink.png",
-  "Classic Black": "model-black.png",
-  "Soft Cream": "model-cream.png"
+  "Mocha Taupe": "model-taupe.jpg",
+  "Rose Pink": "model-pink.jpg",
+  "Classic Black": "model-black.jpg",
+  "Soft Cream": "model-cream.jpg"
 };
 
 exports.handler = async (event) => {
@@ -36,7 +36,7 @@ exports.handler = async (event) => {
     const safeQuantity = Math.min(9, Math.max(1, Number.parseInt(payload.quantity, 10) || 1));
     const safePurchaseEventId = String(payload.purchase_event_id || "").slice(0, 120);
     const siteUrl = process.env.SITE_URL || process.env.URL || process.env.DEPLOY_PRIME_URL || "http://localhost:8888";
-    const selectedImage = colourImageMap[safeColour] || "model-taupe.png";
+    const selectedImage = colourImageMap[safeColour] || "model-taupe.jpg";
     const totalAmount = 2299 * safeQuantity;
 
     const session = await stripe.checkout.sessions.create({
