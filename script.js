@@ -107,7 +107,6 @@ function trackMetaEvent(eventName, payload = {}, options = {}) {
   if (Object.prototype.hasOwnProperty.call(normalisedPayload, "value")) {
     const numericValue = Number(normalisedPayload.value);
     normalisedPayload.value = Number.isFinite(numericValue) ? Number(numericValue.toFixed(2)) : 0;
-    console.log("Pixel Value:", normalisedPayload.value);
   }
 
   if (typeof window !== "undefined" && typeof window.fbq === "function") {
@@ -634,7 +633,6 @@ starButtons.forEach((button) => {
       starButton.classList.remove("is-popping");
 
       if (starRating <= selectedReviewRating) {
-        void starButton.offsetWidth;
         starButton.classList.add("is-popping");
       }
     });

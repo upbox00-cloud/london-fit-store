@@ -10,9 +10,13 @@
     >
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="./images/model-taupe.jpg" fetchpriority="high">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Manrope:wght@400;600;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="styles.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </noscript>
 </head>
   <body>
   <div class="page-noise" aria-hidden="true"></div>
@@ -210,7 +214,7 @@
             </div>
             <p class="checkout-note" id="checkout-note">Your checkout will include the selected colour, size and quantity.</p>
             <div class="trust-seals trust-seals-compact">
-              <img src="./images/trust-badges-optimized.png" alt="Trust badges showing 30-day guarantee, free UK shipping, secure checkout and accepted card payments" width="900" height="600" loading="lazy" decoding="async">
+              <img src="./images/trust-badges-optimized.png" alt="Trust badges showing 30-day guarantee, free UK shipping, secure checkout and accepted card payments" width="900" height="600" loading="lazy" fetchpriority="low" decoding="async">
             </div>
           </div>
         </div>
@@ -249,7 +253,7 @@
 
       <div class="ugc-strip reveal">
         <article class="ugc-card tilt-card review-photo review-card" tabindex="0" role="button" aria-label="Open customer review 1" data-review-image="./images/ugc-1.jpeg" data-review-alt="Customer review showing taupe leggings on body" data-review-text="Ordered the Mocha Taupe in a medium. Arrived in about a week. The waist sits really high and stays put — no rolling at all. Wore them to a reformer class and then straight to a coffee after. Genuinely looked like an outfit.">
-          <img src="./images/ugc-1.jpeg" alt="Customer review showing taupe leggings on body" width="444" height="793" loading="lazy" decoding="async">
+          <img src="./images/ugc-1.jpeg" alt="Customer review showing taupe leggings on body" width="444" height="793" loading="lazy" fetchpriority="low" decoding="async">
           <div class="ugc-user-note">
             <div class="review-stars">★★★★★</div>
             <p class="review-text">"Ordered the Mocha Taupe in a medium. Arrived in about a week. The waist sits really high and stays put — no rolling at all. Wore them to a reformer class and then straight to a coffee after. Genuinely looked like an outfit."</p>
@@ -257,7 +261,7 @@
           </div>
         </article>
         <article class="ugc-card tilt-card review-photo review-card" tabindex="0" role="button" aria-label="Open customer review 2" data-review-image="./images/ugc-2.jpeg" data-review-alt="Customer mirror review showing black leggings" data-review-text="I was skeptical ordering from a smaller brand but the quality surprised me. Fabric is thick enough to not be see-through and the flare is subtle — not over the top. Already ordered the black.">
-          <img src="./images/ugc-2.jpeg" alt="Customer mirror review showing black leggings" width="444" height="793" loading="lazy" decoding="async">
+          <img src="./images/ugc-2.jpeg" alt="Customer mirror review showing black leggings" width="444" height="793" loading="lazy" fetchpriority="low" decoding="async">
           <div class="ugc-user-note">
             <div class="review-stars">★★★★★</div>
             <p class="review-text">"I was skeptical ordering from a smaller brand but the quality surprised me. Fabric is thick enough to not be see-through and the flare is subtle — not over the top. Already ordered the black."</p>
@@ -265,7 +269,7 @@
           </div>
         </article>
         <article class="ugc-card tilt-card review-photo review-card" tabindex="0" role="button" aria-label="Open customer review 3" data-review-image="./images/ugc-3.jpeg" data-review-alt="Customer review showing black leggings hem and shoes" data-review-text="Fits true to size. The cream colour is beautiful in person. Delivery took 8 days which is fine. Only thing I'd say is size up if you're between sizes — I'm usually an S/M and the S fits perfectly but snug.">
-          <img src="./images/ugc-3.jpeg" alt="Customer review showing black leggings hem and shoes" width="444" height="793" loading="lazy" decoding="async">
+          <img src="./images/ugc-3.jpeg" alt="Customer review showing black leggings hem and shoes" width="444" height="793" loading="lazy" fetchpriority="low" decoding="async">
           <div class="ugc-user-note">
             <div class="review-stars">★★★★☆</div>
             <p class="review-text">"Fits true to size. The cream colour is beautiful in person. Delivery took 8 days which is fine. Only thing I'd say is size up if you're between sizes — I'm usually an S/M and the S fits perfectly but snug."</p>
@@ -273,7 +277,7 @@
           </div>
         </article>
         <article class="ugc-card tilt-card review-photo review-card" tabindex="0" role="button" aria-label="Open customer review 4" data-review-image="./images/ugc-4.jpeg" data-review-alt="Customer mirror selfie wearing taupe leggings" data-review-text="Got the Rose Pink for Pilates. The high waist panel actually holds everything in without feeling restrictive. My instructor asked where they were from. That says enough.">
-          <img src="./images/ugc-4.jpeg" alt="Customer mirror selfie wearing taupe leggings" width="444" height="793" loading="lazy" decoding="async">
+          <img src="./images/ugc-4.jpeg" alt="Customer mirror selfie wearing taupe leggings" width="444" height="793" loading="lazy" fetchpriority="low" decoding="async">
           <div class="ugc-user-note">
             <div class="review-stars">★★★★★</div>
             <p class="review-text">"Got the Rose Pink for Pilates. The high waist panel actually holds everything in without feeling restrictive. My instructor asked where they were from. That says enough."</p>
@@ -281,7 +285,7 @@
           </div>
         </article>
         <article class="ugc-card tilt-card review-photo review-card" tabindex="0" role="button" aria-label="Open customer review 5" data-review-image="./images/ugc-5.jpeg" data-review-alt="Customer close-up wearing cream leggings" data-review-text="Really happy with the fit and feel. Took off one star because I had to email about tracking — but they replied quickly and the leggings arrived in good condition. Would buy again.">
-          <img src="./images/ugc-5.jpeg" alt="Customer close-up wearing cream leggings" width="444" height="793" loading="lazy" decoding="async">
+          <img src="./images/ugc-5.jpeg" alt="Customer close-up wearing cream leggings" width="444" height="793" loading="lazy" fetchpriority="low" decoding="async">
           <div class="ugc-user-note">
             <div class="review-stars">★★★★☆</div>
             <p class="review-text">"Really happy with the fit and feel. Took off one star because I had to email about tracking — but they replied quickly and the leggings arrived in good condition. Would buy again."</p>
@@ -289,10 +293,10 @@
           </div>
         </article>
         <article class="ugc-card tilt-card review-photo" tabindex="0" role="button" aria-label="Open customer review 6" data-review-image="./images/ugc-6.jpeg" data-review-alt="Customer fitting room photo wearing black leggings" data-review-text="Excellent leggings. I thought they would be small at first, but they stretch perfectly and do not squeeze or press. I chose XL and they fit well with trainers. I will definitely buy more.">
-          <img src="./images/ugc-6.jpeg" alt="Customer fitting room photo wearing black leggings" width="444" height="793" loading="lazy" decoding="async">
+          <img src="./images/ugc-6.jpeg" alt="Customer fitting room photo wearing black leggings" width="444" height="793" loading="lazy" fetchpriority="low" decoding="async">
         </article>
         <article class="ugc-card tilt-card review-photo" tabindex="0" role="button" aria-label="Open customer review 7" data-review-image="./images/ugc-7.jpeg" data-review-alt="Customer flat lay photo of cream leggings" data-review-text="The sportswear has very good quality, comfortable fabrics, durable and with excellent fit. Ideal for training with style and safety.">
-          <img src="./images/ugc-7.jpeg" alt="Customer flat lay photo of cream leggings" width="444" height="793" loading="lazy" decoding="async">
+          <img src="./images/ugc-7.jpeg" alt="Customer flat lay photo of cream leggings" width="444" height="793" loading="lazy" fetchpriority="low" decoding="async">
         </article>
       </div>
 
@@ -332,7 +336,7 @@
           </label>
 
           <div class="review-preview" id="review-preview" hidden>
-            <img id="review-preview-image" src="" alt="Review photo preview">
+            <img id="review-preview-image" src="" alt="Review photo preview" width="220" height="220" loading="lazy" decoding="async">
           </div>
 
           <button class="btn btn-primary" id="review-submit" type="button">Submit review</button>
@@ -432,7 +436,7 @@
           <div class="phone-screen product-screen">
             <div class="screen-card"><span>Signature detail</span><strong>High-waist contour panel</strong><small>Smooths and supports.</small></div>
             <div class="screen-center product-screen-center">
-              <img class="experience-product" src="./images/model-black.jpg" alt="Model wearing the black sculpt leggings" width="768" height="1152" loading="lazy" decoding="async">
+              <img class="experience-product" src="./images/model-black.jpg" alt="Model wearing the black sculpt leggings" width="768" height="1152" loading="lazy" fetchpriority="low" decoding="async">
             </div>
             <div class="screen-card"><span>Wear feel</span><strong>Secure, flattering, easy</strong><small>Gym to street.</small></div>
           </div>
@@ -494,7 +498,7 @@
         <p>The fit feels easier to trust when you can see it clearly on a real body, in a real setting, with nothing overdone.</p>
       </div>
       <div class="authority-visual reveal">
-        <img class="product-spotlight" src="./images/model-cream.jpg" alt="Model wearing the cream sculpt leggings" width="768" height="1152" loading="lazy" decoding="async">
+        <img class="product-spotlight" src="./images/model-cream.jpg" alt="Model wearing the cream sculpt leggings" width="768" height="1152" loading="lazy" fetchpriority="low" decoding="async">
       </div>
     </section>
 
@@ -569,7 +573,7 @@
     <div class="review-modal-backdrop" id="review-modal-backdrop"></div>
     <div class="review-modal-dialog" role="dialog" aria-modal="true" aria-label="Customer review">
       <button class="review-modal-close" id="review-modal-close" type="button" aria-label="Close review">&times;</button>
-      <img class="review-modal-image" id="review-modal-image" src="" alt="Customer review image">
+      <img class="review-modal-image" id="review-modal-image" src="" alt="Customer review image" width="444" height="793" loading="lazy" decoding="async">
       <p class="review-modal-text" id="review-modal-text"></p>
     </div>
   </div>
