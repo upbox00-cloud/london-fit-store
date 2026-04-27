@@ -749,8 +749,10 @@ h1 {
   }
 
   .quantity-row {
-    display: flex;
-    width: min(100%, 220px);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    max-width: 320px;
   }
 
   .qty-btn,
@@ -805,6 +807,15 @@ h1 {
     display: block;
   }
 
+  .mobile-buy-copy strong {
+    font-size: 14px;
+    line-height: 1.1;
+  }
+
+  .mobile-buy-copy span {
+    font-size: 13px;
+  }
+
   body {
     padding-bottom: 96px;
   }
@@ -842,16 +853,40 @@ h1 {
   }
 
   .quantity-row {
-    width: min(100%, 210px);
+    width: 100%;
+    max-width: none;
   }
 
   .qty-btn {
-    width: 50px;
+    width: auto;
+    font-size: 24px;
   }
 
   .qty-value {
-    min-width: 56px;
-    font-size: 14px;
+    min-width: 0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .quantity-help {
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  .mobile-buy-bar {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .mobile-buy-copy strong {
+    font-size: 13px;
+  }
+
+  .mobile-buy-copy span {
+    font-size: 12px;
   }
 
   h1 {
