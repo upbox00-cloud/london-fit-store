@@ -362,6 +362,7 @@ const selectionSummary = document.getElementById("selection-summary");
 const selectionTotal = document.getElementById("selection-total");
 const checkoutButton = document.getElementById("checkout-button");
 const checkoutTriggers = Array.from(document.querySelectorAll("[data-checkout-trigger]"));
+const selectionScrollTriggers = Array.from(document.querySelectorAll("[data-scroll-to-config]"));
 const reviewName = document.getElementById("review-name");
 const reviewComment = document.getElementById("review-comment");
 const reviewStatus = document.getElementById("review-status");
@@ -724,6 +725,13 @@ async function openCheckout() {
 
 checkoutTriggers.forEach((trigger) => {
   trigger.addEventListener("click", openCheckout);
+});
+
+selectionScrollTriggers.forEach((trigger) => {
+  trigger.addEventListener("click", () => {
+    const target = document.querySelector(".field-group .color-options") || document.getElementById("pricing");
+    target?.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
 });
 
 function initDeferredUi() {

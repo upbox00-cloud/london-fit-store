@@ -1,7 +1,7 @@
 const Stripe = require("stripe");
 
 const allowedColours = new Set(["Mocha Taupe", "Rose Pink", "Classic Black", "Soft Cream"]);
-const allowedSizes = new Set(["XS", "S", "M", "L", "XL"]);
+const allowedSizes = new Set(["S", "M", "L", "XL"]);
 const colourImageMap = {
   "Mocha Taupe": "model-taupe.jpg",
   "Rose Pink": "model-pink.jpg",
