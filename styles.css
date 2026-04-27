@@ -35,7 +35,7 @@ body::after {
   inset: 0;
   background:
     linear-gradient(180deg, rgba(6, 4, 14, 0.62), rgba(6, 4, 14, 0.78)),
-    url("./images/hero-model.jpg") center 42% / cover no-repeat;
+    url("./images/hero-model-optimized.jpg") center 42% / cover no-repeat;
   opacity: 0.5;
   pointer-events: none;
   z-index: -2;
