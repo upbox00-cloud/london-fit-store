@@ -143,6 +143,15 @@ const outcomeMap = {
   }
 };
 
+function runWhenIdle(callback, timeout = 1200) {
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(callback, { timeout });
+    return;
+  }
+
+  window.setTimeout(callback, 1);
+}
+
 const answers = new Array(quizQuestions.length).fill(null);
 let currentStep = 0;
 
@@ -218,34 +227,6 @@ function renderQuiz() {
   quizNext.textContent = currentStep === quizQuestions.length - 1 ? "Show my result" : "Next";
 }
 
-quizNext?.addEventListener("click", () => {
-  if (currentStep >= quizQuestions.length) {
-    currentStep = 0;
-    answers.fill(null);
-    renderQuiz();
-    return;
-  }
-
-  if (!answers[currentStep]) {
-    const firstOption = quizCard?.querySelector(".quiz-option");
-    if (firstOption) {
-      answers[currentStep] = firstOption.dataset.value;
-    }
-  }
-
-  currentStep += 1;
-  renderQuiz();
-});
-
-quizBack?.addEventListener("click", () => {
-  if (currentStep > 0) {
-    currentStep -= 1;
-    renderQuiz();
-  }
-});
-
-renderQuiz();
-
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
@@ -258,83 +239,12 @@ const revealObserver = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.16 });
 
-document.querySelectorAll(".reveal, .radial-wrap").forEach((element) => {
-  revealObserver.observe(element);
-});
-
-const parallaxZone = document.querySelector("[data-parallax]");
 const isTouchDevice = window.matchMedia("(hover: none), (pointer: coarse)").matches;
 const isCompactScreen = window.innerWidth <= 820;
 
-if (parallaxZone && !isTouchDevice && !isCompactScreen) {
-  const floatingCards = parallaxZone.querySelectorAll(".floating-card");
-
-  document.addEventListener("pointermove", (event) => {
-    const offsetX = (event.clientX / window.innerWidth - 0.5) * 24;
-    const offsetY = (event.clientY / window.innerHeight - 0.5) * 24;
-
-    parallaxZone.style.transform = `rotateX(${-offsetY * 0.18}deg) rotateY(${offsetX * 0.18}deg) translate3d(${offsetX * 0.25}px, ${offsetY * 0.25}px, 0)`;
-
-    floatingCards.forEach((card, index) => {
-      const factor = 0.6 + index * 0.28;
-      card.style.transform = `translate3d(${offsetX * factor}px, ${offsetY * factor}px, ${(index + 1) * 10}px)`;
-    });
-  });
-}
-
-if (!isTouchDevice && !isCompactScreen) {
-  document.querySelectorAll(".tilt-card").forEach((card) => {
-    card.addEventListener("pointermove", (event) => {
-      const rect = card.getBoundingClientRect();
-      const rotateX = ((event.clientY - rect.top) / rect.height - 0.5) * -10;
-      const rotateY = ((event.clientX - rect.left) / rect.width - 0.5) * 10;
-      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
-    });
-
-    card.addEventListener("pointerleave", () => {
-      card.style.transform = "";
-    });
-  });
-
-  document.querySelectorAll(".magnetic").forEach((button) => {
-    button.addEventListener("pointermove", (event) => {
-      const rect = button.getBoundingClientRect();
-      const offsetX = event.clientX - rect.left - rect.width / 2;
-      const offsetY = event.clientY - rect.top - rect.height / 2;
-      button.style.transform = `translate(${offsetX * 0.08}px, ${offsetY * 0.08}px)`;
-    });
-
-    button.addEventListener("pointerleave", () => {
-      button.style.transform = "";
-    });
-  });
-}
-
-const lazyMotionVideo = document.querySelector("[data-lazy-video]");
-
-if (lazyMotionVideo) {
-  const loadMotionVideo = () => {
-    const source = lazyMotionVideo.querySelector("source[data-src]");
-
-    if (source && !source.src) {
-      source.src = source.dataset.src;
-      lazyMotionVideo.load();
-    }
-  };
-
-  const videoObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        loadMotionVideo();
-        videoObserver.disconnect();
-      }
-    });
-  }, { rootMargin: "200px 0px" });
-
-  videoObserver.observe(lazyMotionVideo);
-}
-
 const ugcStrip = document.querySelector(".ugc-strip");
+const reviewsCarousel = document.querySelector("[data-reviews-carousel]");
+const reviewsTrack = document.querySelector("[data-reviews-track]");
 const reviewModal = document.getElementById("review-modal");
 const reviewModalBackdrop = document.getElementById("review-modal-backdrop");
 const reviewModalClose = document.getElementById("review-modal-close");
@@ -364,6 +274,73 @@ function closeReviewModal() {
   document.body.style.overflow = "";
 }
 
+function initReviewsCarousel() {
+  if (!reviewsCarousel || !reviewsTrack || reviewsCarousel.dataset.initialized === "true") {
+    return;
+  }
+
+  reviewsCarousel.dataset.initialized = "true";
+
+  const enableAutoCarousel = !isTouchDevice && !isCompactScreen;
+
+  if (!enableAutoCarousel) {
+    return;
+  }
+
+  const originalCards = Array.from(reviewsTrack.children);
+
+  if (originalCards.length < 2) {
+    return;
+  }
+
+  originalCards.forEach((card) => {
+    reviewsTrack.appendChild(card.cloneNode(true));
+  });
+
+  let offset = 0;
+  let paused = false;
+  const speed = isTouchDevice ? 0.2 : 0.35;
+
+  const step = () => {
+    const loopWidth = reviewsTrack.scrollWidth / 2;
+
+    if (!paused && loopWidth > 0) {
+      offset += speed;
+
+      if (offset >= loopWidth) {
+        offset = 0;
+      }
+
+      reviewsTrack.style.transform = `translate3d(${-offset}px, 0, 0)`;
+    }
+
+    window.requestAnimationFrame(step);
+  };
+
+  reviewsCarousel.addEventListener("pointerenter", () => {
+    paused = true;
+  });
+
+  reviewsCarousel.addEventListener("pointerleave", () => {
+    paused = false;
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    paused = document.hidden;
+  });
+
+  window.addEventListener("resize", () => {
+    const loopWidth = reviewsTrack.scrollWidth / 2;
+
+    if (offset >= loopWidth) {
+      offset = 0;
+      reviewsTrack.style.transform = "translate3d(0, 0, 0)";
+    }
+  }, { passive: true });
+
+  window.requestAnimationFrame(step);
+}
+
 function attachReviewCardInteractions(card) {
   card.addEventListener("click", () => openReviewModal(card));
   card.addEventListener("keydown", (event) => {
@@ -373,64 +350,6 @@ function attachReviewCardInteractions(card) {
     }
   });
 }
-
-if (ugcStrip) {
-  let autoScroll = null;
-  const enableAutoScroll = !isTouchDevice && !isCompactScreen;
-
-  const startAutoScroll = () => {
-    if (!enableAutoScroll) {
-      return;
-    }
-
-    if (autoScroll) {
-      return;
-    }
-
-    autoScroll = window.setInterval(() => {
-      const maxScrollLeft = ugcStrip.scrollWidth - ugcStrip.clientWidth;
-      const nextScrollLeft = ugcStrip.scrollLeft + 260;
-      ugcStrip.scrollTo({
-        left: nextScrollLeft >= maxScrollLeft ? 0 : nextScrollLeft,
-        behavior: "smooth"
-      });
-    }, 2200);
-  };
-
-  const stopAutoScroll = () => {
-    window.clearInterval(autoScroll);
-    autoScroll = null;
-  };
-
-  const ugcObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        ugcStrip.classList.add("visible");
-        startAutoScroll();
-      } else {
-        stopAutoScroll();
-      }
-    });
-  }, { threshold: 0.35 });
-
-  ugcObserver.observe(ugcStrip);
-
-  if (enableAutoScroll) {
-    ugcStrip.addEventListener("pointerenter", stopAutoScroll);
-    ugcStrip.addEventListener("pointerleave", startAutoScroll);
-  }
-}
-
-document.querySelectorAll(".review-photo").forEach(attachReviewCardInteractions);
-document.querySelectorAll(".ugc-card[data-review-image]").forEach(attachReviewCardInteractions);
-reviewModalBackdrop?.addEventListener("click", closeReviewModal);
-reviewModalClose?.addEventListener("click", closeReviewModal);
-
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && reviewModal?.classList.contains("is-open")) {
-    closeReviewModal();
-  }
-});
 
 const productConfigImage = document.getElementById("product-config-image");
 const productConfigRoot = document.querySelector(".product-config");
@@ -442,6 +361,7 @@ const qtyValue = document.getElementById("qty-value");
 const selectionSummary = document.getElementById("selection-summary");
 const selectionTotal = document.getElementById("selection-total");
 const checkoutButton = document.getElementById("checkout-button");
+const checkoutTriggers = Array.from(document.querySelectorAll("[data-checkout-trigger]"));
 const reviewName = document.getElementById("review-name");
 const reviewComment = document.getElementById("review-comment");
 const reviewStatus = document.getElementById("review-status");
@@ -449,6 +369,12 @@ const reviewPhotoInput = document.getElementById("review-photo-input");
 const reviewPreview = document.getElementById("review-preview");
 const reviewPreviewImage = document.getElementById("review-preview-image");
 const reviewSubmit = document.getElementById("review-submit");
+
+checkoutTriggers.forEach((trigger) => {
+  if (trigger.tagName === "BUTTON") {
+    trigger.dataset.defaultLabel = trigger.textContent.trim();
+  }
+});
 
 let selectedColour = document.querySelector(".color-swatch.active")?.dataset.label || "Mocha Taupe";
 let selectedSize = document.querySelector(".size-chip.active")?.textContent?.trim() || "S";
@@ -534,10 +460,14 @@ function updateSelectionSummary() {
   }
 
   if (checkoutButton) {
-    checkoutButton.textContent = currentQuantity > 1
-      ? `Buy ${currentQuantity} Now - Limited Stock`
-      : "Buy Now - Limited Stock";
+    checkoutButton.textContent = "Buy now";
   }
+
+  checkoutTriggers.forEach((trigger) => {
+    if (trigger !== checkoutButton && trigger.tagName === "BUTTON" && trigger.dataset.defaultLabel) {
+      trigger.textContent = trigger.dataset.defaultLabel;
+    }
+  });
 }
 
 function trackConfiguredSelection() {
@@ -623,36 +553,7 @@ function updateStarButtons() {
   });
 }
 
-starButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    selectedReviewRating = Number(button.dataset.rating || 5);
-    updateStarButtons();
-
-    starButtons.forEach((starButton) => {
-      const starRating = Number(starButton.dataset.rating || 0);
-      starButton.classList.remove("is-popping");
-
-      if (starRating <= selectedReviewRating) {
-        starButton.classList.add("is-popping");
-      }
-    });
-  });
-});
-
-updateStarButtons();
-
-reviewPhotoInput?.addEventListener("change", (event) => {
-  const file = event.target.files?.[0];
-
-  if (!file || !reviewPreview || !reviewPreviewImage) {
-    return;
-  }
-
-  reviewPreviewImage.src = URL.createObjectURL(file);
-  reviewPreview.hidden = false;
-});
-
-reviewSubmit?.addEventListener("click", () => {
+function handleReviewSubmit() {
   const file = reviewPhotoInput?.files?.[0];
   const name = reviewName?.value.trim() || "London Fit customer";
   const comment = reviewComment?.value.trim();
@@ -732,7 +633,7 @@ reviewSubmit?.addEventListener("click", () => {
     reviewStatus.classList.add("is-success");
     reviewStatus.textContent = "Your review, stars and photo were added to the reviews section on this page.";
   }
-});
+}
 
 const urlState = new URLSearchParams(window.location.search);
 
@@ -756,7 +657,7 @@ if (urlState.get("checkout") === "success") {
   }
 }
 
-checkoutButton?.addEventListener("click", async () => {
+async function openCheckout() {
   const checkoutNote = document.getElementById("checkout-note");
 
   try {
@@ -771,8 +672,12 @@ checkoutButton?.addEventListener("click", async () => {
       num_items: checkoutQuantity
     });
 
-    checkoutButton.classList.add("is-loading");
-    checkoutButton.textContent = "Opening checkout...";
+    checkoutTriggers.forEach((trigger) => {
+      trigger.classList.add("is-loading");
+      if (trigger.tagName === "BUTTON") {
+        trigger.textContent = "Opening checkout...";
+      }
+    });
 
     if (checkoutNote) {
       checkoutNote.classList.remove("is-error");
@@ -800,7 +705,12 @@ checkoutButton?.addEventListener("click", async () => {
 
     window.location.href = data.url;
   } catch (error) {
-    checkoutButton.classList.remove("is-loading");
+    checkoutTriggers.forEach((trigger) => {
+      trigger.classList.remove("is-loading");
+      if (trigger.tagName === "BUTTON" && trigger.dataset.defaultLabel) {
+        trigger.textContent = trigger.dataset.defaultLabel;
+      }
+    });
     updateSelectionSummary();
 
     if (checkoutNote) {
@@ -810,72 +720,285 @@ checkoutButton?.addEventListener("click", async () => {
 
     console.error(error);
   }
+}
+
+checkoutTriggers.forEach((trigger) => {
+  trigger.addEventListener("click", openCheckout);
 });
 
-const topbar = document.querySelector(".topbar");
-
-if (topbar && window.innerWidth > 820) {
-  let lastScrollY = window.scrollY;
-
-  const updateTopbarState = () => {
-    const currentScrollY = window.scrollY;
-    const scrollingDown = currentScrollY > lastScrollY;
-    const passedHeroStart = currentScrollY > 120;
-
-    if (scrollingDown && passedHeroStart) {
-      topbar.classList.add("is-hidden");
-    } else {
-      topbar.classList.remove("is-hidden");
+function initDeferredUi() {
+  quizNext?.addEventListener("click", () => {
+    if (currentStep >= quizQuestions.length) {
+      currentStep = 0;
+      answers.fill(null);
+      renderQuiz();
+      return;
     }
 
-    lastScrollY = currentScrollY;
-  };
+    if (!answers[currentStep]) {
+      const firstOption = quizCard?.querySelector(".quiz-option");
+      if (firstOption) {
+        answers[currentStep] = firstOption.dataset.value;
+      }
+    }
 
-  window.addEventListener("scroll", updateTopbarState, { passive: true });
+    currentStep += 1;
+    renderQuiz();
+  });
+
+  quizBack?.addEventListener("click", () => {
+    if (currentStep > 0) {
+      currentStep -= 1;
+      renderQuiz();
+    }
+  });
+
+  renderQuiz();
+
+  document.querySelectorAll(".reveal, .radial-wrap").forEach((element) => {
+    revealObserver.observe(element);
+  });
+
+  const parallaxZone = document.querySelector("[data-parallax]");
+
+  if (parallaxZone && !isTouchDevice && !isCompactScreen) {
+    const floatingCards = parallaxZone.querySelectorAll(".floating-card");
+    let parallaxFrame = null;
+    let lastPointerEvent = null;
+
+    document.addEventListener("pointermove", (event) => {
+      lastPointerEvent = event;
+
+      if (parallaxFrame) {
+        return;
+      }
+
+      parallaxFrame = window.requestAnimationFrame(() => {
+        const activeEvent = lastPointerEvent;
+        const offsetX = (activeEvent.clientX / window.innerWidth - 0.5) * 24;
+        const offsetY = (activeEvent.clientY / window.innerHeight - 0.5) * 24;
+
+        parallaxZone.style.transform = `rotateX(${-offsetY * 0.18}deg) rotateY(${offsetX * 0.18}deg) translate3d(${offsetX * 0.25}px, ${offsetY * 0.25}px, 0)`;
+
+        floatingCards.forEach((card, index) => {
+          const factor = 0.6 + index * 0.28;
+          card.style.transform = `translate3d(${offsetX * factor}px, ${offsetY * factor}px, ${(index + 1) * 10}px)`;
+        });
+
+        parallaxFrame = null;
+      });
+    }, { passive: true });
+  }
+
+  if (!isTouchDevice && !isCompactScreen) {
+    document.querySelectorAll(".tilt-card").forEach((card) => {
+      card.addEventListener("pointermove", (event) => {
+        const rect = card.getBoundingClientRect();
+        const rotateX = ((event.clientY - rect.top) / rect.height - 0.5) * -10;
+        const rotateY = ((event.clientX - rect.left) / rect.width - 0.5) * 10;
+        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+      }, { passive: true });
+
+      card.addEventListener("pointerleave", () => {
+        card.style.transform = "";
+      });
+    });
+
+    document.querySelectorAll(".magnetic").forEach((button) => {
+      button.addEventListener("pointermove", (event) => {
+        const rect = button.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left - rect.width / 2;
+        const offsetY = event.clientY - rect.top - rect.height / 2;
+        button.style.transform = `translate(${offsetX * 0.08}px, ${offsetY * 0.08}px)`;
+      }, { passive: true });
+
+      button.addEventListener("pointerleave", () => {
+        button.style.transform = "";
+      });
+    });
+  }
+
+  const lazyMotionVideo = document.querySelector("[data-lazy-video]");
+
+  if (lazyMotionVideo) {
+    const loadMotionVideo = () => {
+      const source = lazyMotionVideo.querySelector("source[data-src]");
+
+      if (source && !source.src) {
+        source.src = source.dataset.src;
+        lazyMotionVideo.load();
+      }
+    };
+
+    const videoObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          loadMotionVideo();
+          videoObserver.disconnect();
+        }
+      });
+    }, { rootMargin: "200px 0px" });
+
+    videoObserver.observe(lazyMotionVideo);
+  }
+
+  if (ugcStrip) {
+    let autoScroll = null;
+    const enableAutoScroll = !isTouchDevice && !isCompactScreen;
+
+    const startAutoScroll = () => {
+      if (!enableAutoScroll || autoScroll) {
+        return;
+      }
+
+      autoScroll = window.setInterval(() => {
+        const maxScrollLeft = ugcStrip.scrollWidth - ugcStrip.clientWidth;
+        const nextScrollLeft = ugcStrip.scrollLeft + 260;
+        ugcStrip.scrollTo({
+          left: nextScrollLeft >= maxScrollLeft ? 0 : nextScrollLeft,
+          behavior: "smooth"
+        });
+      }, 2200);
+    };
+
+    const stopAutoScroll = () => {
+      window.clearInterval(autoScroll);
+      autoScroll = null;
+    };
+
+    const ugcObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          ugcStrip.classList.add("visible");
+          startAutoScroll();
+        } else {
+          stopAutoScroll();
+        }
+      });
+    }, { threshold: 0.35 });
+
+    ugcObserver.observe(ugcStrip);
+
+    if (enableAutoScroll) {
+      ugcStrip.addEventListener("pointerenter", stopAutoScroll);
+      ugcStrip.addEventListener("pointerleave", startAutoScroll);
+    }
+  }
+
+  initReviewsCarousel();
+
+  document.querySelectorAll(".review-photo").forEach(attachReviewCardInteractions);
+  document.querySelectorAll(".ugc-card[data-review-image]").forEach(attachReviewCardInteractions);
+  reviewModalBackdrop?.addEventListener("click", closeReviewModal);
+  reviewModalClose?.addEventListener("click", closeReviewModal);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && reviewModal?.classList.contains("is-open")) {
+      closeReviewModal();
+    }
+  });
+
+  starButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      selectedReviewRating = Number(button.dataset.rating || 5);
+      updateStarButtons();
+
+      starButtons.forEach((starButton) => {
+        const starRating = Number(starButton.dataset.rating || 0);
+        starButton.classList.remove("is-popping");
+
+        if (starRating <= selectedReviewRating) {
+          starButton.classList.add("is-popping");
+        }
+      });
+    });
+  });
+
+  updateStarButtons();
+
+  reviewPhotoInput?.addEventListener("change", (event) => {
+    const file = event.target.files?.[0];
+
+    if (!file || !reviewPreview || !reviewPreviewImage) {
+      return;
+    }
+
+    reviewPreviewImage.src = URL.createObjectURL(file);
+    reviewPreview.hidden = false;
+  });
+
+  reviewSubmit?.addEventListener("click", handleReviewSubmit);
+
+  const topbar = document.querySelector(".topbar");
+
+  if (topbar && window.innerWidth > 820) {
+    let lastScrollY = window.scrollY;
+    let topbarFrame = null;
+
+    const updateTopbarState = () => {
+      const currentScrollY = window.scrollY;
+      const scrollingDown = currentScrollY > lastScrollY;
+      const passedHeroStart = currentScrollY > 120;
+
+      topbar.classList.toggle("is-hidden", scrollingDown && passedHeroStart);
+      lastScrollY = currentScrollY;
+      topbarFrame = null;
+    };
+
+    window.addEventListener("scroll", () => {
+      if (topbarFrame) {
+        return;
+      }
+
+      topbarFrame = window.requestAnimationFrame(updateTopbarState);
+    }, { passive: true });
+  }
+
+  const countdownRoot = document.getElementById("promo-countdown");
+
+  if (countdownRoot) {
+    const countdownUnits = {
+      hours: countdownRoot.querySelector('[data-unit="hours"]'),
+      minutes: countdownRoot.querySelector('[data-unit="minutes"]'),
+      seconds: countdownRoot.querySelector('[data-unit="seconds"]')
+    };
+    const promoDurationMs = ((7 * 60 * 60) + (42 * 60) + 19) * 1000;
+    const promoStorageKey = "london-fit-promo-deadline";
+
+    const getPromoDeadline = () => {
+      const storedDeadline = Number.parseInt(window.localStorage.getItem(promoStorageKey) || "", 10);
+
+      if (Number.isFinite(storedDeadline) && storedDeadline > Date.now()) {
+        return storedDeadline;
+      }
+
+      const nextDeadline = Date.now() + promoDurationMs;
+      window.localStorage.setItem(promoStorageKey, String(nextDeadline));
+      return nextDeadline;
+    };
+
+    let promoDeadline = getPromoDeadline();
+
+    const updateCountdown = () => {
+      if (promoDeadline <= Date.now()) {
+        promoDeadline = Date.now() + promoDurationMs;
+        window.localStorage.setItem(promoStorageKey, String(promoDeadline));
+      }
+
+      const difference = Math.max(0, promoDeadline - Date.now());
+      const totalSeconds = Math.floor(difference / 1000);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      countdownUnits.hours.textContent = String(hours).padStart(2, "0");
+      countdownUnits.minutes.textContent = String(minutes).padStart(2, "0");
+      countdownUnits.seconds.textContent = String(seconds).padStart(2, "0");
+    };
+
+    updateCountdown();
+    window.setInterval(updateCountdown, 1000);
+  }
 }
 
-const countdownRoot = document.getElementById("promo-countdown");
-
-if (countdownRoot) {
-  const countdownUnits = {
-    hours: countdownRoot.querySelector('[data-unit="hours"]'),
-    minutes: countdownRoot.querySelector('[data-unit="minutes"]'),
-    seconds: countdownRoot.querySelector('[data-unit="seconds"]')
-  };
-  const promoDurationMs = ((7 * 60 * 60) + (42 * 60) + 19) * 1000;
-  const promoStorageKey = "london-fit-promo-deadline";
-
-  const getPromoDeadline = () => {
-    const storedDeadline = Number.parseInt(window.localStorage.getItem(promoStorageKey) || "", 10);
-
-    if (Number.isFinite(storedDeadline) && storedDeadline > Date.now()) {
-      return storedDeadline;
-    }
-
-    const nextDeadline = Date.now() + promoDurationMs;
-    window.localStorage.setItem(promoStorageKey, String(nextDeadline));
-    return nextDeadline;
-  };
-
-  let promoDeadline = getPromoDeadline();
-
-  const updateCountdown = () => {
-    if (promoDeadline <= Date.now()) {
-      promoDeadline = Date.now() + promoDurationMs;
-      window.localStorage.setItem(promoStorageKey, String(promoDeadline));
-    }
-
-    const difference = Math.max(0, promoDeadline - Date.now());
-    const totalSeconds = Math.floor(difference / 1000);
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-
-    countdownUnits.hours.textContent = String(hours).padStart(2, "0");
-    countdownUnits.minutes.textContent = String(minutes).padStart(2, "0");
-    countdownUnits.seconds.textContent = String(seconds).padStart(2, "0");
-  };
-
-  updateCountdown();
-  window.setInterval(updateCountdown, 1000);
-}
+initDeferredUi();
