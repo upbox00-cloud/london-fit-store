@@ -1009,4 +1009,6 @@ function initDeferredUi() {
   }
 }
 
-initDeferredUi();
+runWhenIdle(() => {
+  initDeferredUi();
+}, 1500);

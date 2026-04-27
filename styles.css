@@ -507,6 +507,14 @@ h1 {
   overflow: hidden;
 }
 
+.section-reviews,
+.benefits-section,
+.faq-section,
+.policies-strip {
+  content-visibility: auto;
+  contain-intrinsic-size: 900px;
+}
+
 .section-title {
   font-size: 56px;
   font-weight: 900;
@@ -721,6 +729,7 @@ h1 {
 @media (max-width: 980px) {
   .topbar {
     padding: 14px 18px;
+    backdrop-filter: none;
   }
 
   .nav {
