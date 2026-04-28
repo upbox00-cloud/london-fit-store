@@ -14,13 +14,48 @@
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;700&display=swap"></noscript>
   <link rel="stylesheet" href="styles.css">
   <script>
-    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '1379788584166728');
-    fbq('track', 'PageView');
+    window.LONDON_FIT_PIXEL_ID = "1379788584166728";
+    window.__metaPixelQueue = window.__metaPixelQueue || [];
+    window.__metaPixelLoaded = false;
+    window.queueMetaPixelCall = function() {
+      window.__metaPixelQueue.push(Array.prototype.slice.call(arguments));
+    };
+    window.loadMetaPixel = function() {
+      if (window.__metaPixelLoaded || window.fbq) return;
+      window.__metaPixelLoaded = true;
+      !function(f,b,e,v,n,t,s){n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', window.LONDON_FIT_PIXEL_ID);
+      window.__metaPixelQueue.splice(0).forEach(function(args) {
+        fbq.apply(null, args);
+      });
+    };
+    window.queueMetaPixelCall('track', 'PageView');
+    window.addEventListener('load', function() {
+      var schedulePixel = function() {
+        window.setTimeout(window.loadMetaPixel, 2000);
+      };
+      var scheduleWhenVisible = function() {
+        if (document.visibilityState === 'visible') {
+          if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(schedulePixel, { timeout: 2500 });
+          } else {
+            schedulePixel();
+          }
+          return;
+        }
+
+        document.addEventListener('visibilitychange', function onVisible() {
+          if (document.visibilityState !== 'visible') return;
+          document.removeEventListener('visibilitychange', onVisible);
+          scheduleWhenVisible();
+        });
+      };
+      scheduleWhenVisible();
+    });
   </script>
   <noscript><img height="1" width="1" style="display:none"
     src="https://www.facebook.com/tr?id=1379788584166728&ev=PageView&noscript=1"

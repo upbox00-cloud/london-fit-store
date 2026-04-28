@@ -109,8 +109,17 @@ function trackMetaEvent(eventName, payload = {}, options = {}) {
     normalisedPayload.value = Number.isFinite(numericValue) ? Number(numericValue.toFixed(2)) : 0;
   }
 
-  if (typeof window !== "undefined" && typeof window.fbq === "function") {
-    window.fbq("track", eventName, normalisedPayload, { eventID: eventId });
+  if (typeof window !== "undefined") {
+    const fbqArgs = ["track", eventName, normalisedPayload, { eventID: eventId }];
+
+    if (typeof window.fbq === "function") {
+      window.fbq(...fbqArgs);
+    } else if (typeof window.queueMetaPixelCall === "function") {
+      window.queueMetaPixelCall(...fbqArgs);
+    } else {
+      window.__metaPixelQueue = window.__metaPixelQueue || [];
+      window.__metaPixelQueue.push(fbqArgs);
+    }
   }
 
   if (sendServer) {
